@@ -18,11 +18,4 @@ class quizController extends ControllerBase {
 		);
 	}
 
-	public static function addQuiz($quiz) {
-		foreach ($quiz as $key => $value) {
-			drupal_set_message($key.': '.$value);
-		}
-		return $quiz;
-	}
-
 }

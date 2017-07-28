@@ -9,6 +9,7 @@ namespace Drupal\quiz\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use \Drupal\quiz\Classes\quizMethods;
 
 class addQuizForm extends FormBase {
 	/**
@@ -55,7 +56,7 @@ class addQuizForm extends FormBase {
 	public function submitForm(array&$form, FormStateInterface $form_state) {
 		// drupal_set_message($this->t('@can_name ,Your application is being submitted!', array('@can_name' => $form_state->getValue('candidate_name'))));
 
-		addQuiz($form_state->getValues());
+		quizMethods::addQuiz($form_state->getValues());
 	}
 
 }
