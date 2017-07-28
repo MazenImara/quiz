@@ -1,0 +1,15 @@
+quiz.content:
+  path: '/quiz'
+  defaults:
+    _controller: '\Drupal\quiz\Controller\quizController::content'
+    _title: 'quiz'
+  requirements:
+    _permission: 'access content'
+
+quiz.addquizform:
+  path: '/addquizform'
+  defaults:
+    _title: 'Add Quiz'
+    _form: '\Drupal\quiz\Form\addQuizForm'
+  requirements:
+    _permission: 'access content'

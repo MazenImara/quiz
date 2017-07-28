@@ -1,0 +1,6 @@
+quiz:
+  version: VERSION
+  js:
+    js/slidedown-command.js; {}
+  dependencies:
+    - core/drupal.ajax
