@@ -39,7 +39,7 @@ class quizController extends ControllerBase {
 		return array(
 			'#theme'   => 'question',
 			'#content' => [
-				'question' => quizMethods::getQuestion($id),
+				'question' => quizMethods::getQuestionById($id),
 				//'form' => $form,
 				//'questions' => quizMethods::getAllQuestions($id),
 			],

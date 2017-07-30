@@ -1,7 +1,7 @@
 <?php
 
 namespace Drupal\quiz\Classes;
-
+use Symfony\Component\HttpFoundation\RedirectResponse;
 class quizMethods {
 
 	public static function addQuiz($quiz) {
@@ -75,7 +75,12 @@ class quizMethods {
 					$question['quizId'],
 				))
 			->execute();
+			
 			drupal_set_message('Question added successfully');
+
+			$response = new RedirectResponse('question/' . self::getQuestionByBody($question['body'])['id']);
+			$response->send();
+
 		} catch (\Exception $e) {
 			drupal_set_message('Error happen when adding Question');
 		}		
@@ -98,11 +103,27 @@ class quizMethods {
 		return $questions;
 	}
 
-	static public function getQuestion($id)
+	static public function getQuestionById($id)
 	{
 		$result = \Drupal::database()->select('question', 'q')
 			->fields('q', ['id', 'body', 'quizId'])
 			->condition('id', [$id] )
+			->execute();	
+		while ($row = $result->fetchAssoc()) {
+			$question = [
+					'id' => $row['id'],
+					'body' => $row['body'],
+					'quizId' => $row['quizId'],
+			] ;
+		}
+		return $question;
+	}
+
+	static public function getQuestionByBody($body)
+	{
+		$result = \Drupal::database()->select('question', 'q')
+			->fields('q', ['id', 'body', 'quizId'])
+			->condition('body', [$body] )
 			->execute();	
 		while ($row = $result->fetchAssoc()) {
 			$question = [
