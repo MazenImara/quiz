@@ -1,2 +1,21 @@
-<h1>test from quiz</h1>
-{{ content }}
+<h1>Quiz: {{content.quiz.title}}</h1> 
+{{content.quiz.body}} <br>
+<h3>Questions</h3>
+{% set i = 1 %}
+{% for question in content.questions %}
+    {{i}}: <a href="question/{{question.id}}"> {{question.body}} </a><br>
+    {% set i = i + 1 %}
+{% endfor %}
+
+
+
+<form {{content.form.attributes }} method="post">
+	{{ content.form.form_build_id }}
+	{{ content.form.form_token }}
+	{{ content.form.form_id }}
+	{{ content.form.subject }}
+	{{ content.form.message }}
+	{{ content.form.body }}
+	<input data-drupal-selector="edit-quizid" type="text" id="edit-quizid" name="quizId" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="quizId" class="form-text required hidden" required="required" aria-required="true">
+	{{ content.form.actions.submit }}
+</form>

@@ -3,6 +3,7 @@
 namespace Drupal\quiz\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use \Drupal\quiz\Classes\quizMethods;
 
 class quizController extends ControllerBase {
 
@@ -11,11 +12,37 @@ class quizController extends ControllerBase {
 	 *
 	 * @return array
 	 */
-	public function content() {
+	public function main() {
+		$form = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addquizform');
+		return array(
+			'#theme'   => 'main',
+			'#content' => [
+				'form' => $form,
+				'quizes' => quizMethods::getAllQuizes(),
+			],
+		);
+	}
+	public function quiz($id) {
+		$form = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addquestionform');
 		return array(
 			'#theme'   => 'quiz',
-			'#content' => 'from quz Controller',
+			'#content' => [
+				'quiz' => quizMethods::getQuiz($id),
+				'form' => $form,
+				'questions' => quizMethods::getAllQuestions($id),
+			],
 		);
 	}
 
+	public function question($id) {
+		//$form = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addquestionform');
+		return array(
+			'#theme'   => 'question',
+			'#content' => [
+				'question' => quizMethods::getQuestion($id),
+				//'form' => $form,
+				//'questions' => quizMethods::getAllQuestions($id),
+			],
+		);
+	}	
 }

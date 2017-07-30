@@ -1,8 +1,24 @@
-quiz.content:
+quiz.main:
   path: '/quiz'
   defaults:
-    _controller: '\Drupal\quiz\Controller\quizController::content'
+    _controller: '\Drupal\quiz\Controller\quizController::main'
     _title: 'quiz'
+  requirements:
+    _permission: 'access content'
+
+quiz.quiz:
+  path: '/quiz/{id}'
+  defaults:
+    _controller: '\Drupal\quiz\Controller\quizController::quiz'
+    _title: 'quiz'
+  requirements:
+    _permission: 'access content'
+
+quiz.question:
+  path: '/quiz/question/{id}'
+  defaults:
+    _controller: '\Drupal\quiz\Controller\quizController::question'
+    _title: 'question'
   requirements:
     _permission: 'access content'
 
@@ -11,5 +27,13 @@ quiz.addquizform:
   defaults:
     _title: 'Add Quiz'
     _form: '\Drupal\quiz\Form\addQuizForm'
+  requirements:
+    _permission: 'access content'
+
+quiz.addQuestionForm:
+  path: '/addquestionform'
+  defaults:
+    _title: 'Add Question'
+    _form: '\Drupal\quiz\Form\addQuestionForm'
   requirements:
     _permission: 'access content'

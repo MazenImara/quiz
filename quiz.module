@@ -1,12 +1,22 @@
 <?php
 function quiz_theme($existing, $type, $theme, $path) {
-  return array(	  	
-	  	'quiz' => array(
-	            			'variables' => array(	                		
-	                						  'content' => 'from hook module',
-	            							),
-	            				),	
-    );
+	return array(	  	
+	  			'main' => array(
+	            				'variables' => array(	                		
+	                								'content' => 'from hook module',
+	            								),
+	              			),
+	  			'quiz' => array(
+	            				'variables' => array(	                		
+	                								'content' => 'from hook module',
+	            								),
+	              			),
+	  			'question' => array(
+	            				'variables' => array(	                		
+	                								'content' => 'from hook module',
+	            								),
+	              			),		              				  	
+    		);
 }
 /*
 function rosenserien_custom_blocks_module_template_preprocess_default_variables_alter(&$variables) {
