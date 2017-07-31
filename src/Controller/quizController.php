@@ -13,36 +13,36 @@ class quizController extends ControllerBase {
 	 * @return array
 	 */
 	public function main() {
-		$form = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addquizform');
+		$form = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addQuizForm');
 		return array(
 			'#theme'   => 'main',
 			'#content' => [
-				'form' => $form,
-				'quizes' => quizMethods::getAllQuizes(),
+				'form'    => $form,
+				'quizes'  => quizMethods::getAllQuizes(),
 			],
 		);
 	}
 	public function quiz($id) {
-		$form = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addquestionform');
+		$form = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addQuestionForm');
 		return array(
-			'#theme'   => 'quiz',
-			'#content' => [
-				'quiz' => quizMethods::getQuiz($id),
-				'form' => $form,
+			'#theme'     => 'quiz',
+			'#content'   => [
+				'quiz'      => quizMethods::getQuiz($id),
+				'form'      => $form,
 				'questions' => quizMethods::getAllQuestions($id),
 			],
 		);
 	}
 
 	public function question($id) {
-		//$form = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addquestionform');
+		$form = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addQuestionForm');
 		return array(
-			'#theme'   => 'question',
-			'#content' => [
+			'#theme'    => 'question',
+			'#content'  => [
 				'question' => quizMethods::getQuestionById($id),
 				//'form' => $form,
 				//'questions' => quizMethods::getAllQuestions($id),
 			],
 		);
-	}	
+	}
 }
