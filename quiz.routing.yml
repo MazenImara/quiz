@@ -37,3 +37,43 @@ quiz.addQuestionForm:
     _form: '\Drupal\quiz\Form\addQuestionForm'
   requirements:
     _permission: 'access content'
+
+quiz.addAnswerForm:
+  path: '/addanswerform'
+  defaults:
+    _title: 'Add Answer'
+    _form: '\Drupal\quiz\Form\addAnswerForm'
+  requirements:
+    _permission: 'access content'
+
+quiz.deleteAnswerForm:
+  path: '/deleteanswerform'
+  defaults:
+    _title: 'Delete Answer'
+    _form: '\Drupal\quiz\Form\deleteAnswerForm'
+  requirements:
+    _permission: 'access content'
+
+quiz.deleteQuestionForm:
+  path: '/deletequestionform'
+  defaults:
+    _title: 'Delete Question'
+    _form: '\Drupal\quiz\Form\deleteQuestionForm'
+  requirements:
+    _permission: 'access content'
+
+quiz.deleteQuizForm:
+  path: '/deletequizform'
+  defaults:
+    _title: 'Delete Quiz'
+    _form: '\Drupal\quiz\Form\deleteQuizForm'
+  requirements:
+    _permission: 'access content'
+
+quiz.editQuestionForm:
+  path: '/editquestionform/{id}'
+  defaults:
+    _title: 'Edit Quiz'
+    _form: '\Drupal\quiz\Form\editQuestionForm'
+  requirements:
+    _permission: 'access content'

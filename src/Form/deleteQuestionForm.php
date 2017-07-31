@@ -4,40 +4,40 @@ namespace Drupal\quiz\Form;
 
 /**
  * @file
- * Contains \Drupal\quiz\Form\addQuizForm.
+ * Contains \Drupal\quiz\Form\deleteAnswerForm.
  */
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use \Drupal\quiz\Classes\quizMethods;
 
-class addQuizForm extends FormBase {
+class deleteQuestionForm extends FormBase {
 	/**
 	 * {@inheritdoc}
 	 */
 	public function getFormId() {
-		return 'addQuiz';
+		return 'deleteQuestion';
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function buildForm(array $form, FormStateInterface $form_state) {
-		$form['title'] = array(
+		$form['questionId'] = array(
 			'#type'        => 'textfield',
-			'#placeholder' => t('Title'),
+			'#placeholder' => t('questionId'),
 			'#required'    => TRUE,
 		);
-		$form['body'] = array(
-			'#type'        => 'textarea',
-			'#placeholder' => t('body'),
+		$form['quizId'] = array(
+			'#type'        => 'textfield',
+			'#placeholder' => t('quizId'),
 			'#required'    => TRUE,
-			'#resizable'   => TRUE,
 		);
 		$form['actions']['#type']  = 'actions';
 		$form['actions']['submit'] = array(
 			'#type'        => 'submit',
-			'#value'       => $this->t('Create'),
+			'#value'       => $this->t('Delete'),
 			'#button_type' => 'primary',
 		);
 		return $form;
@@ -54,9 +54,11 @@ class addQuizForm extends FormBase {
 	 * {@inheritdoc}
 	 */
 	public function submitForm(array&$form, FormStateInterface $form_state) {
-		// drupal_set_message($this->t('@can_name ,Your application is being submitted!', array('@can_name' => $form_state->getValue('candidate_name'))));
 
-		quizMethods::addQuiz($form_state->getValues());
+		quizMethods::deleteQuestion($form_state->getValues()['questionId']);
+		$response = new RedirectResponse('/quiz/'.$form_state->getValues()['quizId']);
+		$response->send();
+		drupal_set_message('Question has been deleted successfuly');
 	}
 
 }

@@ -1,1 +1,41 @@
-{{content.question.body}}
+{{content.question.body}}<br>
+{% for answer in content.answers %}
+    {{answer.status}} {{answer.body}}
+	<form {{content.deleteForm.attributes }} method="post">
+		{{ content.deleteForm.form_build_id }}
+		{{ content.deleteForm.form_token }}
+		{{ content.deleteForm.form_id }}
+		{{ content.deleteForm.subject }}
+		{{ content.deleteForm.message }}
+		<input data-drupal-selector="edit-answerid" type="text" id="edit-answerid" name="answerId" value="{{answer.id}}" size="60" maxlength="128" placeholder="answerId" class="form-text required" required="required" aria-required="true" style="display:none;">
+		<input data-drupal-selector="edit-questionid" type="text" id="edit-questionid--2" name="questionId" value="{{content.question.id}}" size="60" maxlength="128" placeholder="questionId" class="form-text required" required="required" aria-required="true" style="display:none;">
+		{{ content.deleteForm.actions.submit }}
+	</form>
+{% endfor %}
+<h5>Add answer</h5>
+<form {{content.form.attributes }} method="post">
+	{{ content.form.form_build_id }}
+	{{ content.form.form_token }}
+	{{ content.form.form_id }}
+	{{ content.form.subject }}
+	{{ content.form.message }}
+	{{ content.form.body }}
+	{{ content.form.status }}
+	<input data-drupal-selector="edit-questionid" type="text" id="edit-questionid" name="questionId" value="{{content.question.id}}" size="60" maxlength="128" placeholder="questionId" class="form-text required" required="required" aria-required="true" style="display:none;">
+	{{ content.form.actions.submit }}
+</form>
+
+
+<h5>Edit question</h5>
+
+<form {{content.editForm.attributes }} method="post">
+	{{ content.editForm.form_build_id }}
+	{{ content.editForm.form_token }}
+	{{ content.editForm.form_id }}
+	{{ content.editForm.subject }}
+	{{ content.editForm.message }}
+
+	{{ content.editForm.actions.submit }}
+</form>
+
+{{ content.editForm }}

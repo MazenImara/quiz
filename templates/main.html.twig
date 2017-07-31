@@ -1,8 +1,17 @@
-<h1>Main page for quizes</h1>
-{{ content.text }}
-<br>
-{{ content.form }}
-<br>
+{% set i = 1 %}
 {% for quiz in content.quizes %}
-    <a href="quiz/{{quiz.id}}"> {{quiz.title}} </a> <br>
+    {{i}}: <a href="/quiz/{{quiz.id}}"> {{quiz.title}} </a>
+	<form {{content.deleteForm.attributes }} method="post">
+		{{ content.deleteForm.form_build_id }}
+		{{ content.deleteForm.form_token }}
+		{{ content.deleteForm.form_id }}
+		{{ content.deleteForm.subject }}
+		{{ content.deleteForm.message }}
+		<input data-drupal-selector="edit-quizid" type="text" id="edit-quizid" name="quizId" value="{{quiz.id}}" size="60" maxlength="128" placeholder="quizId" class="form-text required" required="required" aria-required="true" style="display:none;">
+		{{ content.deleteForm.actions.submit }}
+	</form>
+    {% set i = i + 1 %}
 {% endfor %}
+
+<h5>Add Quiz</h5>
+{{ content.form }}

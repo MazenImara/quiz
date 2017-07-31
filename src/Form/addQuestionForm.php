@@ -16,7 +16,7 @@ class addQuestionForm extends FormBase {
 	 * {@inheritdoc}
 	 */
 	public function getFormId() {
-		return 'resume_form';
+		return 'addQuestion';
 	}
 
 	/**
@@ -28,6 +28,10 @@ class addQuestionForm extends FormBase {
 			'#placeholder' => t('Question?'),
 			'#required'    => TRUE,
 			'#resizable'   => TRUE,
+		);
+		$form['multichoice'] = array(
+			'#type'  => 'checkbox',
+			'#title' => $this->t('Multichoice'),
 		);
 		$form['quizId'] = array(
 			'#type'        => 'textfield',
@@ -55,9 +59,8 @@ class addQuestionForm extends FormBase {
 	 */
 	public function submitForm(array&$form, FormStateInterface $form_state) {
 
-
 		quizMethods::addQuestion($form_state->getValues());
-		
+
 	}
 
 }

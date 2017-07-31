@@ -4,35 +4,42 @@ namespace Drupal\quiz\Form;
 
 /**
  * @file
- * Contains \Drupal\quiz\Form\addQuizForm.
+ * Contains \Drupal\quiz\Form\addAnswerForm.
  */
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use \Drupal\quiz\Classes\quizMethods;
 
-class addQuizForm extends FormBase {
+class addAnswerForm extends FormBase {
 	/**
 	 * {@inheritdoc}
 	 */
 	public function getFormId() {
-		return 'addQuiz';
+		return 'addAnswer';
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function buildForm(array $form, FormStateInterface $form_state) {
-		$form['title'] = array(
-			'#type'        => 'textfield',
-			'#placeholder' => t('Title'),
-			'#required'    => TRUE,
-		);
 		$form['body'] = array(
 			'#type'        => 'textarea',
-			'#placeholder' => t('body'),
+			'#placeholder' => t('Answer.'),
 			'#required'    => TRUE,
 			'#resizable'   => TRUE,
+		);
+		$form['status']['status'] = array(
+			'#type'  => 'radios',
+			'#title' => $this->t('status'),
+			//'#default_value' => 1,
+			'#options'  => array(0 => $this->t('False'), 1 => $this->t('True')),
+			'#required' => TRUE,
+		);
+		$form['questionId'] = array(
+			'#type'        => 'textfield',
+			'#placeholder' => t('questionId'),
+			'#required'    => TRUE,
 		);
 		$form['actions']['#type']  = 'actions';
 		$form['actions']['submit'] = array(
@@ -54,9 +61,8 @@ class addQuizForm extends FormBase {
 	 * {@inheritdoc}
 	 */
 	public function submitForm(array&$form, FormStateInterface $form_state) {
-		// drupal_set_message($this->t('@can_name ,Your application is being submitted!', array('@can_name' => $form_state->getValue('candidate_name'))));
 
-		quizMethods::addQuiz($form_state->getValues());
+		quizMethods::addAnswer($form_state->getValues());
 	}
 
 }

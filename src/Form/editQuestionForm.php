@@ -4,40 +4,44 @@ namespace Drupal\quiz\Form;
 
 /**
  * @file
- * Contains \Drupal\quiz\Form\addQuizForm.
+ * Contains \Drupal\quiz\Form\addQuestionForm.
  */
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use \Drupal\quiz\Classes\quizMethods;
 
-class addQuizForm extends FormBase {
+class editQuestionForm extends FormBase {
 	/**
 	 * {@inheritdoc}
 	 */
 	public function getFormId() {
-		return 'addQuiz';
+		return 'edit';
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function buildForm(array $form, FormStateInterface $form_state) {
-		$form['title'] = array(
-			'#type'        => 'textfield',
-			'#placeholder' => t('Title'),
-			'#required'    => TRUE,
-		);
 		$form['body'] = array(
 			'#type'        => 'textarea',
-			'#placeholder' => t('body'),
+			'#placeholder' => t('Question?'),
 			'#required'    => TRUE,
 			'#resizable'   => TRUE,
+		);
+		$form['multichoice'] = array(
+			'#type'  => 'checkbox',
+			'#title' => $this->t('Multichoice'),
+		);
+		$form['quizId'] = array(
+			'#type'        => 'textfield',
+			'#placeholder' => t('quizId'),
+			'#required'    => TRUE,
 		);
 		$form['actions']['#type']  = 'actions';
 		$form['actions']['submit'] = array(
 			'#type'        => 'submit',
-			'#value'       => $this->t('Create'),
+			'#value'       => $this->t('Save'),
 			'#button_type' => 'primary',
 		);
 		return $form;
@@ -54,9 +58,9 @@ class addQuizForm extends FormBase {
 	 * {@inheritdoc}
 	 */
 	public function submitForm(array&$form, FormStateInterface $form_state) {
-		// drupal_set_message($this->t('@can_name ,Your application is being submitted!', array('@can_name' => $form_state->getValue('candidate_name'))));
 
-		quizMethods::addQuiz($form_state->getValues());
+		quizMethods::editQuestion($form_state->getValues());
+
 	}
 
 }

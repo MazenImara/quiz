@@ -1,14 +1,25 @@
-<h1>Quiz: {{content.quiz.title}}</h1> 
+<h4>{{content.quiz.title}}</h4> 
 {{content.quiz.body}} <br>
-<h3>Questions</h3>
+<h5>Questions:</h5>
 {% set i = 1 %}
 {% for question in content.questions %}
-    {{i}}: <a href="question/{{question.id}}"> {{question.body}} </a><br>
+    {{i}}: <a href="question/{{question.id}}"> {{question.body}} </a>
+	<form {{content.deleteForm.attributes }} method="post">
+		{{ content.deleteForm.form_build_id }}
+		{{ content.deleteForm.form_token }}
+		{{ content.deleteForm.form_id }}
+		{{ content.deleteForm.subject }}
+		{{ content.deleteForm.message }}
+		<input data-drupal-selector="edit-questionid" type="text" id="edit-questionid" name="questionId" value="{{question.id}}" size="60" maxlength="128" placeholder="questionId" class="form-text required" required="required" aria-required="true" style="display:none;">
+		<input data-drupal-selector="edit-quizid" type="text" id="edit-quizid--2" name="quizId" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="quizId" class="form-text required" required="required" aria-required="true" style="display:none;">
+		{{ content.deleteForm.actions.submit }}
+	</form>
     {% set i = i + 1 %}
 {% endfor %}
 
 
 
+<h5>Add question</h5>
 <form {{content.form.attributes }} method="post">
 	{{ content.form.form_build_id }}
 	{{ content.form.form_token }}
@@ -16,6 +27,8 @@
 	{{ content.form.subject }}
 	{{ content.form.message }}
 	{{ content.form.body }}
-	<input data-drupal-selector="edit-quizid" type="text" id="edit-quizid" name="quizId" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="quizId" class="form-text required hidden" required="required" aria-required="true">
+	{{ content.form.multichoice }}
+	<input data-drupal-selector="edit-quizid" type="text" id="edit-quizid" name="quizId" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="quizId" class="form-text required hidden" required="required" aria-required="true" style="display:none;">
 	{{ content.form.actions.submit }}
 </form>
+
