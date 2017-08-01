@@ -127,4 +127,12 @@ quiz.editUserForm:
   requirements:
     _role: 'authenticated'
 
+quiz.loginForm:
+  path: '/loginform'
+  defaults:
+    _title: 'Login'
+    _form: '\Drupal\quiz\Form\loginForm'
+  requirements:
+    _permission: 'access content'
+
 
