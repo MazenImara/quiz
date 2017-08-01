@@ -37,6 +37,7 @@ class quizMethods {
 		}
 		return $quizes;
 	}
+
 	static public function getQuiz($id) {
 		$result = \Drupal::database()->select('quiz', 'q')
 		                             ->fields('q', ['id', 'title', 'body'])
@@ -189,6 +190,144 @@ class quizMethods {
 		$query = \Drupal::database()->delete('quiz', [])
 		                            ->condition('id', [$id])
 		                            ->execute();
+	}
+
+	static public function editQuestion($question) {
+
+		try {
+			\Drupal::database()->update('question')
+			                   ->condition('id', [$question['id']])
+			                   ->fields([
+					'body'        => $question['body'],
+					'multichoice' => $question['multichoice'],
+
+				])
+				->execute();
+
+			drupal_set_message('Changes saved successfully');
+
+		} catch (\Exception $e) {
+			drupal_set_message('Error happen when editing Question');
+		}
+	}
+
+	static public function addUser($user) {
+
+		try {
+			\Drupal::database()->insert('quiz_user')
+			                   ->fields([
+					'name',
+					'email',
+					'password',
+					'status',
+				])
+			->values(array(
+					$user['name'],
+					$user['email'],
+					$user['password'],
+					$user['status'],
+				))
+			->execute();
+
+			drupal_set_message('User added successfully');
+
+		} catch (\Exception $e) {
+			drupal_set_message('Error happen when adding user');
+		}
+	}
+
+	static public function getAllUsers() {
+		$result = \Drupal::database()->select('quiz_user', 'u')
+		                             ->fields('u', ['id', 'name', 'email', 'password', 'status'])
+		                             ->execute();
+		$users = [];
+		while ($row = $result->fetchAssoc()) {
+			array_push($users, [
+					'id'       => $row['id'],
+					'name'     => $row['name'],
+					'email'    => $row['email'],
+					'password' => $row['password'],
+					'status'   => $row['status'],
+				]);
+		}
+		return $users;
+	}
+
+	static public function getUser($id) {
+		$result = \Drupal::database()->select('quiz_user', 'u')
+		                             ->fields('u', ['id', 'name', 'email', 'password', 'status'])
+		                             ->condition('id', [$id])
+		                             ->execute();
+
+		while ($row = $result->fetchAssoc()) {
+			$user = [
+				'id'       => $row['id'],
+				'name'     => $row['name'],
+				'email'    => $row['email'],
+				'password' => $row['password'],
+				'status'   => $row['status'],
+			];
+		}
+		return $user;
+	}
+
+	static public function assignQuiz($assign) {
+		\Drupal::database()->insert('user_quizes')
+		                   ->fields([
+				'userId',
+				'quizId',
+			])
+		->values(array(
+				$assign['userId'],
+				$assign['quizId'],
+			))
+		->execute();
+	}
+
+	static public function unAssignQuiz($userQuiz) {
+		$query = \Drupal::database()->delete('user_quizes', [])
+		                            ->condition('userId', [$userQuiz['userId']])
+		                            ->condition('quizId', [$userQuiz['quizId']])
+		                            ->execute();
+	}
+
+	static public function getUserQuizes($userId) {
+		$result = \Drupal::database()->select('user_quizes', 'u')
+		                             ->fields('u', ['quizId'])
+		                             ->condition('userId', [$userId])
+		                             ->execute();
+		$quizesIds = [];
+		while ($row = $result->fetchAssoc()) {
+			array_push($quizesIds, [
+					'id' => $row['quizId'],
+				]);
+		}
+		$quizes = [];
+		foreach ($quizesIds as $quiz) {
+			array_push($quizes, self::getQuiz($quiz['id']));
+		}
+		return $quizes;
+	}
+
+	static public function editUser($user) {
+
+		try {
+			\Drupal::database()->update('quiz_user')
+			                   ->condition('id', [$user['id']])
+			                   ->fields([
+					'name'     => $user['name'],
+					'email'    => $user['email'],
+					'password' => $user['password'],
+					'status'   => $user['status'],
+
+				])
+				->execute();
+
+			drupal_set_message('Changes saved successfully');
+
+		} catch (\Exception $e) {
+			drupal_set_message('Error happen when editing');
+		}
 	}
 
 }

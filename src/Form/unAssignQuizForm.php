@@ -4,44 +4,39 @@ namespace Drupal\quiz\Form;
 
 /**
  * @file
- * Contains \Drupal\quiz\Form\addQuestionForm.
+ * Contains \Drupal\quiz\Form\addAnswerForm.
  */
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use \Drupal\quiz\Classes\quizMethods;
 
-class editQuestionForm extends FormBase {
+class unAssignQuizForm extends FormBase {
 	/**
 	 * {@inheritdoc}
 	 */
 	public function getFormId() {
-		return 'editQuestion';
+		return 'unAssignQuiz';
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function buildForm(array $form, FormStateInterface $form_state) {
-		$form['body'] = array(
-			'#type'        => 'textarea',
-			'#placeholder' => t('Question?'),
-			'#required'    => TRUE,
-			'#resizable'   => TRUE,
-		);
-		$form['multichoice'] = array(
-			'#type'  => 'checkbox',
-			'#title' => $this->t('Multichoice'),
-		);
-		$form['id'] = array(
+		$form['userId'] = array(
 			'#type'        => 'textfield',
-			'#placeholder' => t('id'),
+			'#placeholder' => t('userId'),
+			'#required'    => TRUE,
+		);
+		$form['quizId'] = array(
+			'#type'        => 'textfield',
+			'#placeholder' => t('quizId'),
 			'#required'    => TRUE,
 		);
 		$form['actions']['#type']  = 'actions';
 		$form['actions']['submit'] = array(
 			'#type'        => 'submit',
-			'#value'       => $this->t('Save'),
+			'#value'       => $this->t('Unassign'),
 			'#button_type' => 'primary',
 		);
 		return $form;
@@ -59,8 +54,7 @@ class editQuestionForm extends FormBase {
 	 */
 	public function submitForm(array&$form, FormStateInterface $form_state) {
 
-		quizMethods::editQuestion($form_state->getValues());
-
+		quizMethods::unAssignQuiz($form_state->getValues());
 	}
 
 }

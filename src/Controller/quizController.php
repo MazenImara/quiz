@@ -56,4 +56,31 @@ class quizController extends ControllerBase {
 		);
 	}
 
+	public function quizUsers() {
+		$form = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addUserForm');
+		return array(
+			'#theme'   => 'quiz_users',
+			'#content' => [
+				'users'   => quizMethods::getAllUsers(),
+				'form'    => $form,
+
+			],
+		);
+	}
+
+	public function quizUser($id) {
+
+		return array(
+			'#theme'        => 'quiz_user',
+			'#content'      => [
+				'user'         => quizMethods::getUser($id),
+				'quizes'       => quizMethods::getAllQuizes(),
+				'userQuizes'   => quizMethods::getUserQuizes($id),
+				'assignForm'   => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\assignQuizForm'),
+				'unAssignForm' => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\unAssignQuizForm'),
+				'editForm'     => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editUserForm'),
+			],
+		);
+	}
+
 }

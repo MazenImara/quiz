@@ -27,6 +27,11 @@
 
 
 <h5>Edit question</h5>
+{% if content.question.multichoice == 1 %}
+	{% set checked = 'checked' %}
+{% else %}
+	{% set checked = '' %}
+{% endif %}
 
 <form {{content.editForm.attributes }} method="post">
 	{{ content.editForm.form_build_id }}
@@ -34,8 +39,15 @@
 	{{ content.editForm.form_id }}
 	{{ content.editForm.subject }}
 	{{ content.editForm.message }}
-
+	<div>
+	  <textarea data-drupal-selector="edit-body" id="edit-body--2" name="body" rows="5" cols="60" placeholder="Question?" class="form-textarea required" required="required" aria-required="true">{{content.question.body}}</textarea>
+	</div>
+	<div class="form-item js-form-type-checkbox form-type-checkbox form-item-multichoice">        
+	<input data-drupal-selector="edit-multichoice" type="checkbox" id="edit-multichoice" name="multichoice" value="" class="form-checkbox" {{checked}}>
+	<label for="edit-multichoice" class="option">Multichoice</label>
+	</div>
+	<div class="form-item js-form-type-textfield form-type-textfield form-item-quizid form-no-label">
+	<input data-drupal-selector="edit-id" type="text" id="edit-id" name="id" value="{{content.question.id}}" size="60" maxlength="128" placeholder="id" class="form-text required" required="required" aria-required="true" style="display:none;">
 	{{ content.editForm.actions.submit }}
 </form>
 
-{{ content.editForm }}

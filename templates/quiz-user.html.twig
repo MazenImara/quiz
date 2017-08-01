@@ -1,0 +1,116 @@
+
+
+
+
+
+{% if content.user.status == 1 %}
+	{% set active = 'checked' %}
+	{% set unactive = '' %}
+{% else %}
+	{% set unactive = 'checked' %}
+	{% set active = '' %}
+{% endif %}
+<form {{content.editForm.attributes }} method="post">
+	{{ content.editForm.form_build_id }}
+	{{ content.editForm.form_token }}
+	{{ content.editForm.form_id }}
+	{{ content.editForm.subject }}
+	{{ content.editForm.message }}
+	<div class="form-item js-form-type-textfield form-type-textfield form-item-name form-no-label">
+	 <input data-drupal-selector="edit-name" type="text" id="edit-name" name="name" value="{{content.user.name}}" size="60" maxlength="128" placeholder="Name" class="form-text required" required="required" aria-required="true">
+	</div>
+	<div class="form-item js-form-type-email form-type-email form-item-email form-no-label">
+	<input data-drupal-selector="edit-email" type="email" id="edit-email" name="email" value="{{content.user.email}}" size="60" maxlength="254" placeholder="Email" class="form-email required" required="required" aria-required="true">
+	</div>
+	<div class="form-item js-form-type-textfield form-type-textfield form-item-password form-no-label">
+	<input data-drupal-selector="edit-password" type="text" id="edit-password" name="password" value="{{content.user.password}}" size="60" maxlength="128" placeholder="Lösenord" class="form-text required" required="required" aria-required="true">
+	</div>
+	<fieldset data-drupal-selector="edit-status" id="edit-status--2--wrapper" class="fieldgroup form-composite required form-item js-form-wrapper form-wrapper" required="required" aria-required="true">
+	      <legend>
+	    <span class="fieldset-legend js-form-required form-required">status</span>
+	  </legend>
+	  <div class="fieldset-wrapper">
+	<div id="edit-status--2">
+	<div class="form-item js-form-type-radio form-type-radio form-item-status">
+	<input data-drupal-selector="edit-status-1" type="radio" id="edit-status-1" name="status" value="1" class="form-radio" {{active}} >
+	<label for="edit-status-1" class="option">Active</label>
+	</div>
+	<div class="form-item js-form-type-radio form-type-radio form-item-status">
+	<input data-drupal-selector="edit-status-0" type="radio" id="edit-status-0" name="status" value="0" class="form-radio" {{unactive}} >
+	<label for="edit-status-0" class="option">Unactive</label>
+	</div>
+
+
+	</div>
+	</div>
+	</fieldset>
+	<div class="form-item js-form-type-textfield form-type-textfield form-item-id form-no-label">
+	<input data-drupal-selector="edit-id" type="text" id="edit-id" name="id" value="{{content.user.id}}" size="60" maxlength="128" placeholder="id" class="form-text required" required="required" aria-required="true" style="display:none;">
+	</div>
+
+	{{ content.editForm.actions.submit }}
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+	<div class="col-sm-6">
+		<h6>Assigned Quizes:</h6>
+		{% for quiz in content.userQuizes %}		    
+			<form {{content.unAssignForm.attributes }} method="post" style="display: inline;">
+				{{ content.unAssignForm.form_build_id }}
+				{{ content.unAssignForm.form_token }}
+				{{ content.unAssignForm.form_id }}
+				{{ content.unAssignForm.subject }}
+				{{ content.unAssignForm.message }}
+				<input data-drupal-selector="edit-userid" type="text" id="edit-userid--2" name="userId" value="{{content.user.id}}" size="60" maxlength="128" placeholder="userId" class="form-text required" required="required" aria-required="true" style="display:none;">
+				<input data-drupal-selector="edit-quizid" type="text" id="edit-quizid--2" name="quizId" value="{{quiz.id}}" size="60" maxlength="128" placeholder="quizId" class="form-text required" required="required" aria-required="true" style="display:none;">
+				<button data-drupal-selector="edit-submit" type="submit" id="edit-submit--2" name="op" value="" class="button button--primary js-form-submit form-submit" style="color:red;padding: 3px;"><span class="glyphicon glyphicon-remove"></span></button>
+			</form>
+			{{quiz.title}}<br>
+		{% endfor %}
+	</div>
+	<div class="col-sm-6">
+		<h6>Not assigned Quizes:</h6>
+		{% for quiz in content.quizes %}
+			{% if quiz not in content.userQuizes %}
+			    
+				<form {{content.assignForm.attributes }} method="post" style="display: inline;">
+					{{ content.assignForm.form_build_id }}
+					{{ content.assignForm.form_token }}
+					{{ content.assignForm.form_id }}
+					{{ content.assignForm.subject }}
+					{{ content.assignForm.message }}
+					<input data-drupal-selector="edit-userid" type="text" id="edit-userid" name="userId" value="{{content.user.id}}" size="60" maxlength="128" placeholder="userId" class="form-text required" required="required" aria-required="true" style="display:none;">
+					<input data-drupal-selector="edit-quizid" type="text" id="edit-quizid" name="quizId" value="{{quiz.id}}" size="60" maxlength="128" placeholder="quizId" class="form-text required" required="required" aria-required="true" style="display:none;">
+					<button data-drupal-selector="edit-submit" type="submit" id="edit-submit" name="op" value="Assign" class="button button--primary js-form-submit form-submit" style="color: green;padding:3px;"><span class="glyphicon glyphicon-plus"></span></button>			
+				</form>
+				{{quiz.title}}<br>
+			{% endif %}
+		{% endfor %}
+	</div>
+</div>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

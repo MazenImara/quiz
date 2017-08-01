@@ -4,7 +4,7 @@ quiz.main:
     _controller: '\Drupal\quiz\Controller\quizController::main'
     _title: 'quiz'
   requirements:
-    _permission: 'access content'
+    _role: 'authenticated'
 
 quiz.quiz:
   path: '/quiz/{id}'
@@ -12,7 +12,7 @@ quiz.quiz:
     _controller: '\Drupal\quiz\Controller\quizController::quiz'
     _title: 'quiz'
   requirements:
-    _permission: 'access content'
+    _role: 'authenticated'
 
 quiz.question:
   path: '/quiz/question/{id}'
@@ -20,7 +20,23 @@ quiz.question:
     _controller: '\Drupal\quiz\Controller\quizController::question'
     _title: 'question'
   requirements:
-    _permission: 'access content'
+    _role: 'authenticated'
+
+quiz.QuizUsers:
+  path: '/quiz/users'
+  defaults:
+    _title: 'Quiz users'
+    _controller: '\Drupal\quiz\Controller\quizController::quizUsers'
+  requirements:
+    _role: 'authenticated'
+
+quiz.QuizUser:
+  path: '/quiz/user/{id}'
+  defaults:
+    _title: 'Quiz user'
+    _controller: '\Drupal\quiz\Controller\quizController::quizUser'
+  requirements:
+    _role: 'authenticated'
 
 quiz.addquizform:
   path: '/addquizform'
@@ -28,7 +44,7 @@ quiz.addquizform:
     _title: 'Add Quiz'
     _form: '\Drupal\quiz\Form\addQuizForm'
   requirements:
-    _permission: 'access content'
+    _role: 'authenticated'
 
 quiz.addQuestionForm:
   path: '/addquestionform'
@@ -36,7 +52,7 @@ quiz.addQuestionForm:
     _title: 'Add Question'
     _form: '\Drupal\quiz\Form\addQuestionForm'
   requirements:
-    _permission: 'access content'
+    _role: 'authenticated'
 
 quiz.addAnswerForm:
   path: '/addanswerform'
@@ -44,7 +60,7 @@ quiz.addAnswerForm:
     _title: 'Add Answer'
     _form: '\Drupal\quiz\Form\addAnswerForm'
   requirements:
-    _permission: 'access content'
+    _role: 'authenticated'
 
 quiz.deleteAnswerForm:
   path: '/deleteanswerform'
@@ -52,7 +68,7 @@ quiz.deleteAnswerForm:
     _title: 'Delete Answer'
     _form: '\Drupal\quiz\Form\deleteAnswerForm'
   requirements:
-    _permission: 'access content'
+    _role: 'authenticated'
 
 quiz.deleteQuestionForm:
   path: '/deletequestionform'
@@ -60,7 +76,7 @@ quiz.deleteQuestionForm:
     _title: 'Delete Question'
     _form: '\Drupal\quiz\Form\deleteQuestionForm'
   requirements:
-    _permission: 'access content'
+    _role: 'authenticated'
 
 quiz.deleteQuizForm:
   path: '/deletequizform'
@@ -68,7 +84,7 @@ quiz.deleteQuizForm:
     _title: 'Delete Quiz'
     _form: '\Drupal\quiz\Form\deleteQuizForm'
   requirements:
-    _permission: 'access content'
+    _role: 'authenticated'
 
 quiz.editQuestionForm:
   path: '/editquestionform/{id}'
@@ -76,4 +92,39 @@ quiz.editQuestionForm:
     _title: 'Edit Quiz'
     _form: '\Drupal\quiz\Form\editQuestionForm'
   requirements:
-    _permission: 'access content'
+    _role: 'authenticated'
+
+quiz.addUserForm:
+  path: '/adduser'
+  defaults:
+    _title: 'Add User'
+    _form: '\Drupal\quiz\Form\addUserForm'
+  requirements:
+    _role: 'authenticated'
+
+quiz.assignQuizForm:
+  path: '/assignquiz'
+  defaults:
+    _title: 'Assign Quiz'
+    _form: '\Drupal\quiz\Form\assignQuizForm'
+  requirements:
+    _role: 'authenticated'
+
+quiz.unassignQuizForm:
+  path: '/unassignquiz'
+  defaults:
+    _title: 'UnAssign Quiz'
+    _form: '\Drupal\quiz\Form\unAssignQuizForm'
+  requirements:
+    _role: 'authenticated'
+
+
+quiz.editUserForm:
+  path: '/edituserform'
+  defaults:
+    _title: 'Edit User'
+    _form: '\Drupal\quiz\Form\editUserForm'
+  requirements:
+    _role: 'authenticated'
+
+

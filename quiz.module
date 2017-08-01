@@ -15,7 +15,17 @@ function quiz_theme($existing, $type, $theme, $path) {
 	            				'variables' => array(	                		
 	                								'content' => 'from hook module',
 	            								),
-	              			),		              				  	
+	              			),	
+	  			'quiz_users' => array(
+	            				'variables' => array(	                		
+	                								'content' => 'from hook module',
+	            								),
+	              			),	
+	  			'quiz_user' => array(
+	            				'variables' => array(	                		
+	                								'content' => 'from hook module',
+	            								),
+	              			),	              			              				              				  	
     		);
 }
 /*
