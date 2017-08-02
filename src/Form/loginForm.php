@@ -30,7 +30,7 @@ class loginForm extends FormBase {
 
 		];
 
-		$form['pass_fields'] = array(
+		$form['password'] = array(
 			'#type' => 'password',
 			//'#description' => t('Enter the same password in both fields'),
 			//'#size'     => 32,

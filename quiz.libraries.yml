@@ -1,6 +1,10 @@
-quiz:
-  version: VERSION
+quiz_lib:
+  version: 1.x
+  css:
+    layout:
+      css/quiz-style.css: {}
   js:
-    js/slidedown-command.js; {}
+    js/main.js: {}
   dependencies:
     - core/drupal.ajax
+    - core/jquery

@@ -1,0 +1,13 @@
+
+<form id="doQuizForm" method="post" >
+	<div id='quiz-content'>
+		<h5>{{content.quiz.title}}</h5>
+		<p>{{content.quiz.body}}</p>
+	</div>
+	
+	<input type="text" name="userId" value="{{content.user.id}}" required="true">
+	<input type="text" id="questionId" name="questionId" value="0" required="true">
+	<input type="text" name="quizId" value="{{content.quiz.id}}" required="true">
+	<input type="submit" id="submit" value="Start" onsubmit="doQuiz();">
+</form>
+

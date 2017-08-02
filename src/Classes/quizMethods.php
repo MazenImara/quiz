@@ -128,6 +128,27 @@ class quizMethods {
 		return $question;
 	}
 
+	static public function getNextQuestion($questionId, $quizId) {
+		$query = \Drupal::database()->select('question', 'q')
+		                            ->fields('q', ['id', 'body', 'multichoice', 'quizId'])
+		                            ->condition('quizId', [$quizId])
+		                            ->orderBy('id', 'DESC');
+
+		if ($questionId != '0') {
+			$query->condition('id', [$questionId], '>');
+		}
+		$result = $query->execute();
+		while ($row = $result->fetchAssoc()) {
+			$question = [
+				'id'          => $row['id'],
+				'body'        => $row['body'],
+				'multichoice' => $row['multichoice'],
+				'quizId'      => $row['quizId'],
+			];
+		}
+		return $question;
+	}
+
 	static public function addAnswer($answer) {
 
 		try {
@@ -271,6 +292,24 @@ class quizMethods {
 		return $user;
 	}
 
+	static public function getUserByEmail($email) {
+		$result = \Drupal::database()->select('quiz_user', 'u')
+		                             ->fields('u', ['id', 'name', 'email', 'password', 'status'])
+		                             ->condition('email', [$email])
+		                             ->execute();
+
+		while ($row = $result->fetchAssoc()) {
+			$user = [
+				'id'       => $row['id'],
+				'name'     => $row['name'],
+				'email'    => $row['email'],
+				'password' => $row['password'],
+				'status'   => $row['status'],
+			];
+		}
+		return $user;
+	}
+
 	static public function assignQuiz($assign) {
 		\Drupal::database()->insert('user_quizes')
 		                   ->fields([
@@ -327,6 +366,22 @@ class quizMethods {
 
 		} catch (\Exception $e) {
 			drupal_set_message('Error happen when editing');
+		}
+	}
+
+	static public function login($login) {
+		if ($user = self::getUserByEmail($login['email'])) {
+			if ($user['password'] == $login['password']) {
+				session_start();
+				$_SESSION['login_user'] = $user;
+				$response               = new RedirectResponse('/userquiz');
+				$response->send();
+				drupal_set_message('login successfully');
+			} else {
+				drupal_set_message('The password is wrong');
+			}
+		} else {
+			drupal_set_message('This email is not reqistered');
 		}
 	}
 

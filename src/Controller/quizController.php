@@ -4,6 +4,8 @@ namespace Drupal\quiz\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use \Drupal\quiz\Classes\quizMethods;
 
 class quizController extends ControllerBase {
@@ -81,6 +83,62 @@ class quizController extends ControllerBase {
 				'editForm'     => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editUserForm'),
 			],
 		);
+	}
+
+	public function userQuiz() {
+		$user = $_SESSION['login_user'];
+		return array(
+			'#theme'    => 'user_quiz',
+			'#attached' => [
+				'library'  => [
+					'quiz/quiz_lib',
+				],
+			],
+			'#content'    => [
+				'loginForm'  => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\loginForm'),
+				'user'       => $user,
+				'userQuizes' => quizMethods::getUserQuizes($user['id']),
+			],
+		);
+	}
+
+	public function startQuiz($id) {
+		if (!isset($_SESSION['login_user'])) {
+			$response = new RedirectResponse('/userquiz');
+			$response->send();
+		}
+		return array(
+			'#theme'    => 'start_quiz',
+			'#attached' => [
+				'library'  => [
+					'quiz/quiz_lib',
+				],
+			],
+			'#content' => [
+				'user'    => $_SESSION['login_user'],
+				'quiz'    => quizMethods::getQuiz($id),
+			],
+		);
+	}
+
+	public function logout() {
+		if (isset($_SESSION['login_user'])) {
+			unset($_SESSION['login_user']);
+		}
+		$response = new RedirectResponse('/');
+		$response->send();
+	}
+
+	public function ajaxQuiz() {
+		if (!isset($_SESSION['login_user'])) {
+			return new JsonResponse(['login' => '0']);
+		} else {
+			if ($nextQuestion = quizMethods::getNextQuestion($_POST['questionId'], $_POST['quizId'])) {
+				return new JsonResponse($nextQuestion);
+			} else {
+				return new JsonResponse(['more' => '0']);
+			}
+		}
 	}
 
 }

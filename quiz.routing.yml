@@ -38,6 +38,39 @@ quiz.QuizUser:
   requirements:
     _role: 'authenticated'
 
+quiz.userQuiz:
+  path: '/userquiz'
+  defaults:
+    _title: 'User Quiz'
+    _controller: '\Drupal\quiz\Controller\quizController::userQuiz'
+  requirements:
+    _permission: 'access content'
+
+quiz.startQuiz:
+  path: '/startquiz/{id}'
+  defaults:
+    _title: 'Start Quiz'
+    _controller: '\Drupal\quiz\Controller\quizController::startQuiz'
+  requirements:
+    _permission: 'access content'    
+
+quiz.logout:
+  path: '/userquiz/logout'
+  defaults:
+    _title: 'Logout'
+    _controller: '\Drupal\quiz\Controller\quizController::logout'
+  requirements:
+    _permission: 'access content'
+
+quiz.ajaxquiz:
+  path: '/ajaxquiz'
+  defaults:
+    _title: 'Ajax Quiz'
+    _controller: '\Drupal\quiz\Controller\quizController::ajaxQuiz'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
 quiz.addquizform:
   path: '/addquizform'
   defaults:
