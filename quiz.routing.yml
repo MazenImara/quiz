@@ -103,6 +103,22 @@ quiz.deleteAnswerForm:
   requirements:
     _role: 'authenticated'
 
+quiz.changeAnswerStatusForm:
+  path: '/changeanswerstatusform'
+  defaults:
+    _title: 'Cahnge Answer Status'
+    _form: '\Drupal\quiz\Form\changeAnswerStatusForm'
+  requirements:
+    _role: 'authenticated'
+
+quiz.answerStatusTrueForm:
+  path: '/answerstatustrueform'
+  defaults:
+    _title: 'Answer Status True'
+    _form: '\Drupal\quiz\Form\answerStatusTrueForm'
+  requirements:
+    _role: 'authenticated'
+
 quiz.deleteQuestionForm:
   path: '/deletequestionform'
   defaults:

@@ -43,17 +43,19 @@ class quizController extends ControllerBase {
 	}
 
 	public function question($id) {
-		$form       = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addAnswerForm');
-		$deleteForm = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteAnswerForm');
-		$editForm   = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editQuestionForm');
+		$form             = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addAnswerForm');
+		$deleteForm       = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteAnswerForm');
+		$editForm         = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editQuestionForm');
+		$answerStatusForm = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\changeAnswerStatusForm');
 		return array(
-			'#theme'      => 'question',
-			'#content'    => [
-				'question'   => quizMethods::getQuestionById($id),
-				'form'       => $form,
-				'deleteForm' => $deleteForm,
-				'editForm'   => $editForm,
-				'answers'    => quizMethods::getAllAnswers($id),
+			'#theme'            => 'question',
+			'#content'          => [
+				'question'         => quizMethods::getQuestionById($id),
+				'form'             => $form,
+				'deleteForm'       => $deleteForm,
+				'editForm'         => $editForm,
+				'answers'          => quizMethods::getAllAnswers($id),
+				'answerStatusForm' => $answerStatusForm,
 			],
 		);
 	}
@@ -133,11 +135,20 @@ class quizController extends ControllerBase {
 		if (!isset($_SESSION['login_user'])) {
 			return new JsonResponse(['login' => '0']);
 		} else {
+			if ($_POST['questionId'] != '0') {
+				quizMethods::result($_SESSION['login_user']['id'], $_POST['quizId'], $_POST['questionId'], $_POST['userAnswer']);
+			}
 			if ($nextQuestion = quizMethods::getNextQuestion($_POST['questionId'], $_POST['quizId'])) {
-				return new JsonResponse($nextQuestion);
+				$questionWithAnswer = [
+					'question' => $nextQuestion,
+					'answers'  => quizMethods::getAllAnswers($nextQuestion['id']),
+				];
+
+				return new JsonResponse($questionWithAnswer);
 			} else {
 				return new JsonResponse(['more' => '0']);
 			}
+
 		}
 	}
 

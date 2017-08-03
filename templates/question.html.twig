@@ -1,30 +1,3 @@
-{{content.question.body}}<br>
-{% for answer in content.answers %}
-    {{answer.status}} {{answer.body}}
-	<form {{content.deleteForm.attributes }} method="post">
-		{{ content.deleteForm.form_build_id }}
-		{{ content.deleteForm.form_token }}
-		{{ content.deleteForm.form_id }}
-		{{ content.deleteForm.subject }}
-		{{ content.deleteForm.message }}
-		<input data-drupal-selector="edit-answerid" type="text" id="edit-answerid" name="answerId" value="{{answer.id}}" size="60" maxlength="128" placeholder="answerId" class="form-text required" required="required" aria-required="true" style="display:none;">
-		<input data-drupal-selector="edit-questionid" type="text" id="edit-questionid--2" name="questionId" value="{{content.question.id}}" size="60" maxlength="128" placeholder="questionId" class="form-text required" required="required" aria-required="true" style="display:none;">
-		{{ content.deleteForm.actions.submit }}
-	</form>
-{% endfor %}
-<h5>Add answer</h5>
-<form {{content.form.attributes }} method="post">
-	{{ content.form.form_build_id }}
-	{{ content.form.form_token }}
-	{{ content.form.form_id }}
-	{{ content.form.subject }}
-	{{ content.form.message }}
-	{{ content.form.body }}
-	{{ content.form.status }}
-	<input data-drupal-selector="edit-questionid" type="text" id="edit-questionid" name="questionId" value="{{content.question.id}}" size="60" maxlength="128" placeholder="questionId" class="form-text required" required="required" aria-required="true" style="display:none;">
-	{{ content.form.actions.submit }}
-</form>
-
 
 <h5>Edit question</h5>
 {% if content.question.multichoice == 1 %}
@@ -51,3 +24,85 @@
 	{{ content.editForm.actions.submit }}
 </form>
 
+
+
+
+
+
+
+<div class="row">
+	<div class="col-sm-6">
+<h5>Change the correct answer</h5>
+<form {{content.answerStatusForm.attributes }} method="post">
+	{{ content.answerStatusForm.form_build_id }}
+	{{ content.answerStatusForm.form_token }}
+	{{ content.answerStatusForm.form_id }}
+	{{ content.answerStatusForm.subject }}
+	{{ content.answerStatusForm.message }}
+	{{ content.answerStatusForm.body }}
+	<input data-drupal-selector="edit-questionid" type="text" id="edit-questionid--3" name="questionId" value="{{content.question.id}}" size="60" maxlength="128" placeholder="questionId" class="form-text required" required="required" aria-required="true" style="display:none;">
+	{% for answer in content.answers %}
+	    {% if answer.status %}
+	    	<input data-drupal-selector="edit-answerid-44" type="radio" id="edit-answerid-44" name="answerId" value="{{answer.id}}" class="form-radio" checked>
+	    {% else %}
+	    	<input data-drupal-selector="edit-answerid-44" type="radio" id="edit-answerid-44" name="answerId" value="{{answer.id}}" class="form-radio">
+	    {% endif %}
+		
+
+		{{answer.body}} <br>
+
+	{% endfor %}	
+	{{ content.answerStatusForm.actions.submit }}
+</form>
+	</div>
+	<div class="col-sm-6">
+{% for answer in content.answers %}
+    {#{answer.status}} {{answer.body}#}
+	<form {{content.deleteForm.attributes }} method="post">
+		{{ content.deleteForm.form_build_id }}
+		{{ content.deleteForm.form_token }}
+		{{ content.deleteForm.form_id }}
+		{{ content.deleteForm.subject }}
+		{{ content.deleteForm.message }}
+		<input data-drupal-selector="edit-answerid" type="text" id="edit-answerid" name="answerId" value="{{answer.id}}" size="60" maxlength="128" placeholder="answerId" class="form-text required" required="required" aria-required="true" style="display:none;">
+		<input data-drupal-selector="edit-questionid" type="text" id="edit-questionid--2" name="questionId" value="{{content.question.id}}" size="60" maxlength="128" placeholder="questionId" class="form-text required" required="required" aria-required="true" style="display:none;">
+
+		{% if answer.status %}
+			<input data-drupal-selector="edit-status-1-2" type="radio" id="edit-status-1--2" name="status" value="1" class="form-radio" checked style="display:none;"> 
+		{% else %}
+			<input data-drupal-selector="edit-status-0-2" type="radio" id="edit-status-0--2" name="status" value="0" class="form-radio" checked style="display:none;">
+		{% endif %}
+
+		{{ content.deleteForm.actions.submit }}
+	</form>
+{% endfor %}
+	</div>
+</div>
+
+
+
+
+
+<h5>Add answer</h5>
+<form {{content.form.attributes }} method="post">
+	{{ content.form.form_build_id }}
+	{{ content.form.form_token }}
+	{{ content.form.form_id }}
+	{{ content.form.subject }}
+	{{ content.form.message }}
+	{{ content.form.body }}
+	{% if content.answers | length > 0 %}
+		<input data-drupal-selector="edit-status-0" type="radio" id="edit-status-0" name="status" value="0" class="form-radio" checked style="display:none;"> 
+	{% else %}
+		<input data-drupal-selector="edit-status-1" type="radio" id="edit-status-1" name="status" value="1" class="form-radio" checked style="display:none;"> 
+	{% endif %}
+	<input data-drupal-selector="edit-questionid" type="text" id="edit-questionid" name="questionId" value="{{content.question.id}}" size="60" maxlength="128" placeholder="questionId" class="form-text required" required="required" aria-required="true" style="display:none;">
+	{{ content.form.actions.submit }}
+</form>
+
+
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

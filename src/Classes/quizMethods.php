@@ -188,11 +188,59 @@ class quizMethods {
 		}
 		return $answers;
 	}
+	static public function changeAnswerStatus($answer) {
+		if (self::getQuestionById($answer['questionId'])['multichoice']) {
+			# code...
+		} else {
+			\Drupal::database()->update('answer')
+			                   ->condition('questionId', [$answer['questionId']])
+			                   ->fields([
+					'status' => 0,
 
-	static public function deleteAnswer($id) {
-		$query = \Drupal::database()->delete('answer', [])
-		                            ->condition('id', [$id])
-		                            ->execute();
+				])
+				->execute();
+			\Drupal::database()->update('answer')
+			                   ->condition('id', [$answer['answerId']])
+			                   ->fields([
+					'status' => 1,
+
+				])
+				->execute();
+		}
+	}
+
+	static public function answerStatusTrue($answer) {
+		if (self::getQuestionById($answer['questionId'])['multichoice']) {
+			\Drupal::database()->update('answer')
+			                   ->condition('id', [$answer['answerId']])
+			                   ->fields([
+					'status' => 1,
+
+				])
+				->execute();
+		}
+	}
+
+	static public function answerStatusFalse($answer) {
+		if (self::getQuestionById($answer['questionId'])['multichoice']) {
+			\Drupal::database()->update('answer')
+			                   ->condition('id', [$answer['answerId']])
+			                   ->fields([
+					'status' => 0,
+
+				])
+				->execute();
+		}
+	}
+
+	static public function deleteAnswer($answer) {
+		if ($answer['status']) {
+			drupal_set_message('You can not delete it until you change it to false answer or make another true answer');
+		} else {
+			$query = \Drupal::database()->delete('answer', [])
+			                            ->condition('id', [$answer['answerId']])
+			                            ->execute();
+		}
 	}
 
 	static public function deleteQuestion($id) {
@@ -382,6 +430,74 @@ class quizMethods {
 			}
 		} else {
 			drupal_set_message('This email is not reqistered');
+		}
+	}
+
+	static public function result($userId, $quizId, $questionId, $answer) {
+
+		if ($answer == self::getCorrectAnswer($questionId)['body']) {
+			$status         = true;
+		} else { $status = 0;}
+		\Drupal::database()->insert('quiz_result')
+		                   ->fields([
+				'userId',
+				'quizTitle',
+				'question',
+				'correctAnswerId',
+				'userAnswerId',
+				'status',
+
+			])
+		->values([
+				$userId,
+				self::getQuiz($quizId)['title'],
+				self::getQuestionById($questionId)['body'],
+				self::addCorrectAnswer($questionId),
+				self::addUserAnswer($answer),
+				$status,
+
+			])
+		->execute();
+
+	}
+
+	static public function addUserAnswer($answer) {
+		\Drupal::database()->insert('quiz_user_answer')
+		                   ->fields(['body'])
+		                   ->values([$answer])
+		                   ->execute();
+
+		$result = \Drupal::database()->select('quiz_user_answer', 'q')
+		                             ->fields('q', ['id'])
+		                             ->orderBy('id', 'DESC')
+		                             ->execute();
+		while ($row = $result->fetchAssoc()) {
+			return $row['id'];
+		}
+
+	}
+
+	static public function addCorrectAnswer($questionId) {
+		\Drupal::database()->insert('quiz_correct_answer')
+		                   ->fields(['body'])
+		                   ->values([self::getCorrectAnswer($questionId)['body']])
+		                   ->execute();
+
+		$result = \Drupal::database()->select('quiz_correct_answer', 'q')
+		                             ->fields('q', ['id'])
+		                             ->orderBy('id', 'DESC')
+		                             ->execute();
+		while ($row = $result->fetchAssoc()) {
+			return $row['id'];
+		}
+
+	}
+
+	static function getCorrectAnswer($questionId) {
+		foreach (self::getAllAnswers($questionId) as $answer) {
+			if ($answer['status']) {
+				return $answer;
+			}
 		}
 	}
 
