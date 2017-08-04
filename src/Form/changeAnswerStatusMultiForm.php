@@ -12,12 +12,12 @@ use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use \Drupal\quiz\Classes\quizMethods;
 
-class answerStatusTrueForm extends FormBase {
+class changeAnswerStatusMultiForm extends FormBase {
 	/**
 	 * {@inheritdoc}
 	 */
 	public function getFormId() {
-		return 'AnswerStatusTrue';
+		return 'changeAnswerStatusMulti';
 	}
 
 	/**
@@ -37,7 +37,7 @@ class answerStatusTrueForm extends FormBase {
 		$form['actions']['#type']  = 'actions';
 		$form['actions']['submit'] = array(
 			'#type'        => 'submit',
-			'#value'       => $this->t('Save'),
+			'#value'       => $this->t('Change'),
 			'#button_type' => 'primary',
 		);
 		return $form;
@@ -55,7 +55,7 @@ class answerStatusTrueForm extends FormBase {
 	 */
 	public function submitForm(array&$form, FormStateInterface $form_state) {
 
-		quizMethods::answerStatusTrue($form_state->getValues());
+		quizMethods::changeAnswerStatusMulti($form_state->getValues());
 		$response = new RedirectResponse('/quiz/question/'.$form_state->getValues()['questionId']);
 		$response->send();
 

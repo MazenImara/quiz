@@ -111,11 +111,11 @@ quiz.changeAnswerStatusForm:
   requirements:
     _role: 'authenticated'
 
-quiz.answerStatusTrueForm:
-  path: '/answerstatustrueform'
+quiz.ChangeAnswerStatusMultiForm:
+  path: '/changeanswerstatusmultiform'
   defaults:
-    _title: 'Answer Status True'
-    _form: '\Drupal\quiz\Form\answerStatusTrueForm'
+    _title: 'Change Answer Status Multi'
+    _form: '\Drupal\quiz\Form\changeAnswerStatusMultiForm'
   requirements:
     _role: 'authenticated'
 

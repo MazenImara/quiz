@@ -43,19 +43,21 @@ class quizController extends ControllerBase {
 	}
 
 	public function question($id) {
-		$form             = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addAnswerForm');
-		$deleteForm       = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteAnswerForm');
-		$editForm         = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editQuestionForm');
-		$answerStatusForm = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\changeAnswerStatusForm');
+		$form                  = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addAnswerForm');
+		$deleteForm            = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteAnswerForm');
+		$editForm              = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editQuestionForm');
+		$answerStatusForm      = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\changeAnswerStatusForm');
+		$answerStatusMultiForm = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\changeAnswerStatusMultiForm');
 		return array(
-			'#theme'            => 'question',
-			'#content'          => [
-				'question'         => quizMethods::getQuestionById($id),
-				'form'             => $form,
-				'deleteForm'       => $deleteForm,
-				'editForm'         => $editForm,
-				'answers'          => quizMethods::getAllAnswers($id),
-				'answerStatusForm' => $answerStatusForm,
+			'#theme'                 => 'question',
+			'#content'               => [
+				'question'              => quizMethods::getQuestionById($id),
+				'form'                  => $form,
+				'deleteForm'            => $deleteForm,
+				'editForm'              => $editForm,
+				'answers'               => quizMethods::getAllAnswers($id),
+				'answerStatusForm'      => $answerStatusForm,
+				'answerStatusMultiForm' => $answerStatusMultiForm,
 			],
 		);
 	}
@@ -109,6 +111,8 @@ class quizController extends ControllerBase {
 			$response = new RedirectResponse('/userquiz');
 			$response->send();
 		}
+		session_start();
+		$_SESSION['tryId'] = quizMethods::addTry($_SESSION['login_user']['id']);
 		return array(
 			'#theme'    => 'start_quiz',
 			'#attached' => [
@@ -136,7 +140,7 @@ class quizController extends ControllerBase {
 			return new JsonResponse(['login' => '0']);
 		} else {
 			if ($_POST['questionId'] != '0') {
-				quizMethods::result($_SESSION['login_user']['id'], $_POST['quizId'], $_POST['questionId'], $_POST['userAnswer']);
+				quizMethods::result($_SESSION['tryId'], $_POST['quizId'], $_POST['questionId'], $_POST['userAnswer']);
 			}
 			if ($nextQuestion = quizMethods::getNextQuestion($_POST['questionId'], $_POST['quizId'])) {
 				$questionWithAnswer = [
@@ -146,7 +150,8 @@ class quizController extends ControllerBase {
 
 				return new JsonResponse($questionWithAnswer);
 			} else {
-				return new JsonResponse(['more' => '0']);
+				$result = quizMethods::getResult($_SESSION['tryId']);
+				return new JsonResponse($result);
 			}
 
 		}

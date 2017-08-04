@@ -188,6 +188,21 @@ class quizMethods {
 		}
 		return $answers;
 	}
+	static public function getAnswer($id) {
+		$result = \Drupal::database()->select('answer', 'a')
+		                             ->fields('a', ['id', 'body', 'status', 'questionId'])
+		                             ->condition('id', [$id])
+		                             ->execute();
+
+		while ($row = $result->fetchAssoc()) {
+			return [
+				'id'         => $row['id'],
+				'body'       => $row['body'],
+				'status'     => $row['status'],
+				'questionId' => $row['questionId']
+			];
+		}
+	}
 	static public function changeAnswerStatus($answer) {
 		if (self::getQuestionById($answer['questionId'])['multichoice']) {
 			# code...
@@ -209,27 +224,36 @@ class quizMethods {
 		}
 	}
 
-	static public function answerStatusTrue($answer) {
-		if (self::getQuestionById($answer['questionId'])['multichoice']) {
-			\Drupal::database()->update('answer')
-			                   ->condition('id', [$answer['answerId']])
-			                   ->fields([
-					'status' => 1,
-
-				])
-				->execute();
+	static public function getTrueAnswers($questionId) {
+		$result = \Drupal::database()->select('answer', 'a')
+		                             ->fields('a', ['status'])
+		                             ->condition('questionId', [$questionId])
+		                             ->condition('status', [1])
+		                             ->execute();
+		$trueAnswers = [];
+		while ($row = $result->fetchAssoc()) {
+			array_push($trueAnswers, [
+					'status' => $row['status'],
+				]);
 		}
+		return $trueAnswers;
 	}
 
-	static public function answerStatusFalse($answer) {
+	static public function changeAnswerStatusMulti($answer) {
 		if (self::getQuestionById($answer['questionId'])['multichoice']) {
-			\Drupal::database()->update('answer')
-			                   ->condition('id', [$answer['answerId']])
-			                   ->fields([
-					'status' => 0,
+			if (self::getAnswer($answer['answerId'])['status']) {
 
-				])
-				->execute();
+				if (count(self::getTrueAnswers($answer['questionId'])) > 1) {
+					\Drupal::database()->update('answer')->condition('id', [$answer['answerId']])->fields(['status' => 0, ])->execute();
+				} else {
+					drupal_set_message('The question must have one true answer at least ');
+				}
+			} else {
+				\Drupal::database()->update('answer')
+				                   ->condition('id', [$answer['answerId']])
+				                   ->fields(['status' => 1, ])
+					->execute();
+			}
 		}
 	}
 
@@ -262,8 +286,7 @@ class quizMethods {
 	}
 
 	static public function editQuestion($question) {
-
-		try {
+		if ($question['multichoice']) {
 			\Drupal::database()->update('question')
 			                   ->condition('id', [$question['id']])
 			                   ->fields([
@@ -272,11 +295,20 @@ class quizMethods {
 
 				])
 				->execute();
-
 			drupal_set_message('Changes saved successfully');
+		} else {
+			if (count(self::getTrueAnswers($question['id'])) == 1) {
+				\Drupal::database()->update('question')
+				                   ->condition('id', [$question['id']])
+				                   ->fields([
+						'body'        => $question['body'],
+						'multichoice' => $question['multichoice'],
 
-		} catch (\Exception $e) {
-			drupal_set_message('Error happen when editing Question');
+					])
+					->execute();
+			} else {
+				drupal_set_message('To change from multichoice to one choice you have to add only one true answer ');
+			}
 		}
 	}
 
@@ -433,62 +465,105 @@ class quizMethods {
 		}
 	}
 
-	static public function result($userId, $quizId, $questionId, $answer) {
+	static public function result($tryId, $quizId, $questionId, $answer) {
+		$question = self::getQuestionById($questionId);
+		if ($question['multichoice']) {
+			$correctAnswers = self::getCorrectAnswers($questionId);
+			$score          = 0;
+			$correct        = 0;
+			$wrong          = 0;
+			foreach ($answer as $id) {
 
-		if ($answer == self::getCorrectAnswer($questionId)['body']) {
-			$status         = true;
-		} else { $status = 0;}
-		\Drupal::database()->insert('quiz_result')
-		                   ->fields([
-				'userId',
-				'quizTitle',
-				'question',
-				'correctAnswerId',
-				'userAnswerId',
-				'status',
+				if (self::getAnswer($id)['status']) {
+					$correct++;
+				} else {
+					$wrong++;
+				}
+			}
+			$correct = $correct-$wrong;
+			if ($correct > 0) {
+				$score = $correct/count($correctAnswers);
+			}
+			\Drupal::database()->insert('quiz_result')
+			                   ->fields([
+					'tryId',
+					'quizTitle',
+					'question',
+					'score',
 
-			])
-		->values([
-				$userId,
-				self::getQuiz($quizId)['title'],
-				self::getQuestionById($questionId)['body'],
-				self::addCorrectAnswer($questionId),
-				self::addUserAnswer($answer),
-				$status,
+				])
+			->values([
+					$tryId,
+					self::getQuiz($quizId)['title'],
+					$question['body'],
+					$score,
+				])
+			->execute();
+			$result = \Drupal::database()->select('quiz_result', 'q')
+			                             ->fields('q', ['id'])
+			                             ->orderBy('id', 'DESC')
+			                             ->execute();
+			while ($row = $result->fetchAssoc()) {
+				$resultId = $row['id'];
+			}
 
-			])
-		->execute();
+			foreach ($answer as $id) {
+				self::addUserAnswer(self::getAnswer($id)['body'], $resultId);
+			}
+			self::addCorrectAnswers($correctAnswers, $resultId);
 
-	}
+		} else {
+			if ($answer == self::getCorrectAnswer($questionId)['body']) {
+				$score         = 1;
+			} else { $score = 0;}
+			\Drupal::database()->insert('quiz_result')
+			                   ->fields([
+					'tryId',
+					'quizTitle',
+					'question',
+					'score',
 
-	static public function addUserAnswer($answer) {
-		\Drupal::database()->insert('quiz_user_answer')
-		                   ->fields(['body'])
-		                   ->values([$answer])
-		                   ->execute();
-
-		$result = \Drupal::database()->select('quiz_user_answer', 'q')
-		                             ->fields('q', ['id'])
-		                             ->orderBy('id', 'DESC')
-		                             ->execute();
-		while ($row = $result->fetchAssoc()) {
-			return $row['id'];
+				])
+			->values([
+					$tryId,
+					self::getQuiz($quizId)['title'],
+					$question['body'],
+					$score,
+				])
+			->execute();
+			$result = \Drupal::database()->select('quiz_result', 'q')
+			                             ->fields('q', ['id'])
+			                             ->orderBy('id', 'DESC')
+			                             ->execute();
+			while ($row = $result->fetchAssoc()) {
+				$resultId = $row['id'];
+			}
+			self::addCorrectAnswer($questionId, $resultId);
+			self::addUserAnswer($answer, $resultId);
 		}
+	}
+
+	static public function addUserAnswer($body, $resultId) {
+		\Drupal::database()->insert('quiz_user_answer')
+		                   ->fields(['body', 'resultId'])
+		                   ->values([$body, $resultId])
+		                   ->execute();
 
 	}
 
-	static public function addCorrectAnswer($questionId) {
+	static public function addCorrectAnswer($questionId, $resultId) {
 		\Drupal::database()->insert('quiz_correct_answer')
-		                   ->fields(['body'])
-		                   ->values([self::getCorrectAnswer($questionId)['body']])
+		                   ->fields(['body', 'resultId'])
+		                   ->values([self::getCorrectAnswer($questionId)['body'], $resultId])
 		                   ->execute();
+	}
 
-		$result = \Drupal::database()->select('quiz_correct_answer', 'q')
-		                             ->fields('q', ['id'])
-		                             ->orderBy('id', 'DESC')
-		                             ->execute();
-		while ($row = $result->fetchAssoc()) {
-			return $row['id'];
+	static public function addCorrectAnswers($answers, $resultId) {
+		foreach ($answers as $answer) {
+			\Drupal::database()->insert('quiz_correct_answer')
+			                   ->fields(['body', 'resultId'])
+			                   ->values([$answer['body'], $resultId])
+			                   ->execute();
 		}
 
 	}
@@ -498,6 +573,49 @@ class quizMethods {
 			if ($answer['status']) {
 				return $answer;
 			}
+		}
+	}
+
+	static function getCorrectAnswers($questionId) {
+		$answers = [];
+		foreach (self::getAllAnswers($questionId) as $answer) {
+			if ($answer['status']) {
+				array_push($answers, $answer);
+			}
+		}
+		return $answers;
+	}
+
+	static public function getResult($tryId) {
+		$result = \Drupal::database()->select('quiz_result', 'u')
+		                             ->fields('u', ['id', 'tryId', 'quizTitle', 'question', 'score'])
+		                             ->condition('tryId', [$tryId])
+		                             ->execute();
+		$quiz_result = ['more' => '0'];
+		while ($row = $result->fetchAssoc()) {
+			array_push($quiz_result, [
+					'id'    => $row['id'],
+					'tryId' => $row['tryId'],
+
+					'quizTitle' => $row['quizTitle'],
+					'question'  => $row['question'],
+					'score'     => $row['score'],
+				]);
+		}
+		return $quiz_result;
+	}
+
+	static public function addTry($userId) {
+		\Drupal::database()->insert('quiz_try')
+		                   ->fields(['userId'])
+		                   ->values([$userId, ])
+		                   ->execute();
+		$result = \Drupal::database()->select('quiz_try', 'q')
+		                             ->fields('q', ['id'])
+		                             ->orderBy('id', 'DESC')
+		                             ->execute();
+		while ($row = $result->fetchAssoc()) {
+			return $row['id'];
 		}
 	}
 
