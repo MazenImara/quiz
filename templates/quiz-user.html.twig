@@ -1,6 +1,26 @@
 
 
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Quiz Title</th>
+        <th>Score / 4</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+		{% for try in content.userTries %}
+			
+			<tr>
+		        <td><a href="/quiz/result/{{try.id}}"> {{try.quizTitle}} </a></td>
+		        <td>{{try.score}}</td>
+		        <td>{{try.date}}</td>
+		    </tr>
 
+		{% endfor %}
+
+    </tbody>
+</table>
 
 
 {% if content.user.status == 1 %}

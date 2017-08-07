@@ -1,0 +1,31 @@
+Name: {{content.try.user.name}}
+<br>
+Quiz Title: {{content.try.quizTitle}}
+<br>
+Quiz Score: {{content.try.score}} %
+<br>
+Details:
+
+{% for i in range(0, (content.results | length - 3)) %}
+    <br> Q{{i + 1}}. {{content.results[i].question}}?
+    <div class="row">
+    	<div class="col-sm-6">
+    		User Answers:<br>
+    		{% for answer in content.results[i].userAnswers %}
+    		    {{answer.body}}<br>
+    		{% endfor %}
+    	</div>
+    	<div class="col-sm-6">
+    		Correct Answers:<br>
+    		{% for answer in content.results[i].correctAnswers %}
+    		    {{answer.body}}<br>
+    		{% endfor %}
+    	</div>
+    </div>
+    Score: {{content.results[i].score}}<br>
+{% endfor %}
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

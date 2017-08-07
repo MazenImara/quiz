@@ -501,7 +501,7 @@ class quizMethods {
 			->execute();
 			$result = \Drupal::database()->select('quiz_result', 'q')
 			                             ->fields('q', ['id'])
-			                             ->orderBy('id', 'DESC')
+			                             ->orderBy('id', 'ASC')
 			                             ->execute();
 			while ($row = $result->fetchAssoc()) {
 				$resultId = $row['id'];
@@ -533,7 +533,7 @@ class quizMethods {
 			->execute();
 			$result = \Drupal::database()->select('quiz_result', 'q')
 			                             ->fields('q', ['id'])
-			                             ->orderBy('id', 'DESC')
+			                             ->orderBy('id', 'ASC')
 			                             ->execute();
 			while ($row = $result->fetchAssoc()) {
 				$resultId = $row['id'];
@@ -587,28 +587,78 @@ class quizMethods {
 	}
 
 	static public function getResult($tryId) {
-		$result = \Drupal::database()->select('quiz_result', 'u')
+		$tryScore    = 0;
+		$questionNum = 0;
+		$result      = \Drupal::database()->select('quiz_result', 'u')
 		                             ->fields('u', ['id', 'tryId', 'quizTitle', 'question', 'score'])
 		                             ->condition('tryId', [$tryId])
 		                             ->execute();
-		$quiz_result = ['more' => '0'];
+		$quiz_result = ['more' => '0', 'tryScore' => 0, ];
 		while ($row = $result->fetchAssoc()) {
+			$tryScore = $tryScore+(double) $row['score'];
+			$questionNum++;
 			array_push($quiz_result, [
 					'id'    => $row['id'],
 					'tryId' => $row['tryId'],
 
-					'quizTitle' => $row['quizTitle'],
-					'question'  => $row['question'],
-					'score'     => $row['score'],
+					'quizTitle'      => $row['quizTitle'],
+					'question'       => $row['question'],
+					'score'          => $row['score'],
+					'correctAnswers' => self::getResultCorrectAnswers($row['id']),
+					'userAnswers'    => self::getResultUserAnswers($row['id']),
 				]);
 		}
+		if ($questionNum > 0) {
+			$persetScore = ($tryScore*100)/$questionNum;
+		} else {
+			$persetScore = 0;
+		}
+		$quiz_result['tryScore'] = $persetScore;
+		self::setTryScore($persetScore, $tryId);
 		return $quiz_result;
 	}
 
-	static public function addTry($userId) {
+	static public function setTryScore($tryScore, $tryId) {
+		\Drupal::database()->update('quiz_try')
+		                   ->condition('id', [$tryId])
+		                   ->fields(['score' => $tryScore, ])
+			->execute();
+	}
+
+	static public function getResultCorrectAnswers($resultId) {
+		$result = \Drupal::database()->select('quiz_correct_answer', 'u')
+		                             ->fields('u', ['id', 'body', 'resultId'])
+		                             ->condition('resultId', [$resultId])
+		                             ->execute();
+		$answers = [];
+		while ($row = $result->fetchAssoc()) {
+			array_push($answers, [
+					'id'       => $row['id'],
+					'body'     => $row['body'],
+					'resultId' => $row['resultId'],
+				]);
+		}
+		return $answers;
+	}
+	static public function getResultUserAnswers($resultId) {
+		$result = \Drupal::database()->select('quiz_user_answer', 'u')
+		                             ->fields('u', ['id', 'body', 'resultId'])
+		                             ->condition('resultId', [$resultId])
+		                             ->execute();
+		$answers = [];
+		while ($row = $result->fetchAssoc()) {
+			array_push($answers, [
+					'id'       => $row['id'],
+					'body'     => $row['body'],
+					'resultId' => $row['resultId'],
+				]);
+		}
+		return $answers;
+	}
+	static public function addTry($userId, $quizTitle) {
 		\Drupal::database()->insert('quiz_try')
-		                   ->fields(['userId'])
-		                   ->values([$userId, ])
+		                   ->fields(['quizTitle', 'userId'])
+		                   ->values([$quizTitle, $userId, ])
 		                   ->execute();
 		$result = \Drupal::database()->select('quiz_try', 'q')
 		                             ->fields('q', ['id'])
@@ -619,4 +669,44 @@ class quizMethods {
 		}
 	}
 
+	static public function getTries($userId) {
+		$query = \Drupal::database()->select('quiz_try', 'q')
+		                            ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date']);
+		if ($userId != null) {
+			$query->condition('userId', [$userId]);
+		}
+
+		$result = $query->execute();
+
+		$tries = [];
+		while ($row = $result->fetchAssoc()) {
+			array_push($tries, [
+					'id'        => $row['id'],
+					'quizTitle' => $row['quizTitle'],
+					'score'     => $row['score'],
+					'user'      => self::getUser($row['userId']),
+					'date'      => $row['date'],
+				]);
+		}
+
+		return $tries;
+	}
+
+	static public function getTry($id) {
+		$result = \Drupal::database()->select('quiz_try', 'q')
+		                             ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date'])
+		                             ->condition('id', [$id])
+		                             ->execute();
+
+		while ($row = $result->fetchAssoc()) {
+			return [
+				'id'        => $row['id'],
+				'quizTitle' => $row['quizTitle'],
+				'score'     => $row['score'],
+				'user'      => self::getUser($row['userId']),
+				'date'      => $row['date'],
+			];
+		}
+
+	}
 }

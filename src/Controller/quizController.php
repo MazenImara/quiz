@@ -85,6 +85,7 @@ class quizController extends ControllerBase {
 				'assignForm'   => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\assignQuizForm'),
 				'unAssignForm' => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\unAssignQuizForm'),
 				'editForm'     => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editUserForm'),
+				'userTries'    => quizMethods::getTries($id),
 			],
 		);
 	}
@@ -111,8 +112,9 @@ class quizController extends ControllerBase {
 			$response = new RedirectResponse('/userquiz');
 			$response->send();
 		}
+		$quiz = quizMethods::getQuiz($id);
 		session_start();
-		$_SESSION['tryId'] = quizMethods::addTry($_SESSION['login_user']['id']);
+		$_SESSION['tryId'] = quizMethods::addTry($_SESSION['login_user']['id'], $quiz['title']);
 		return array(
 			'#theme'    => 'start_quiz',
 			'#attached' => [
@@ -122,11 +124,42 @@ class quizController extends ControllerBase {
 			],
 			'#content' => [
 				'user'    => $_SESSION['login_user'],
-				'quiz'    => quizMethods::getQuiz($id),
+				'quiz'    => $quiz,
 			],
 		);
 	}
 
+	public function results() {
+
+		return array(
+			'#theme'    => 'results',
+			'#attached' => [
+				'library'  => [
+					'quiz/quiz_lib',
+				],
+			],
+			'#content' => [
+				'tries'   => quizMethods::getTries(),
+
+			],
+		);
+	}
+	public function result($tryId) {
+
+		return array(
+			'#theme'    => 'result',
+			'#attached' => [
+				'library'  => [
+					'quiz/quiz_lib',
+				],
+			],
+			'#content' => [
+				'results' => quizMethods::getResult($tryId),
+				'try'     => quizMethods::getTry($tryId),
+
+			],
+		);
+	}
 	public function logout() {
 		if (isset($_SESSION['login_user'])) {
 			unset($_SESSION['login_user']);

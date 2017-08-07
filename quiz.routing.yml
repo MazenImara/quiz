@@ -38,6 +38,22 @@ quiz.QuizUser:
   requirements:
     _role: 'authenticated'
 
+quiz.results:
+  path: '/quiz/results'
+  defaults:
+    _title: 'Quiz Results'
+    _controller: '\Drupal\quiz\Controller\quizController::results'
+  requirements:
+    _role: 'authenticated'  
+
+quiz.result:
+  path: '/quiz/result/{tryId}'
+  defaults:
+    _title: 'Quiz Result'
+    _controller: '\Drupal\quiz\Controller\quizController::result'
+  requirements:
+    _role: 'authenticated'       
+
 quiz.userQuiz:
   path: '/userquiz'
   defaults:

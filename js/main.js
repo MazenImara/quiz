@@ -1,10 +1,5 @@
 jQuery(document).ready(function($) {
 
-function doQuiz() {
-	alert()
-	
-}
-
 $("#doQuizForm").submit(function(e) {
     e.preventDefault();
 	$.post("/ajaxquiz",
@@ -18,7 +13,7 @@ $("#doQuizForm").submit(function(e) {
 function nextQuestion(data) {
 	if (data.more == 0 ) {
 		$("#question").html('<h6>You have done</h6>');
-		$("#answers").html('your result is :' + result(data));				
+		$("#answers").html('your result is : ' + data.tryScore + ' % '+ result(data));				
 		$("#submit").hide();
 	}
 	else{
@@ -53,12 +48,28 @@ function answers(data) {
 
 function result(data) {
 	result= '';
-	for (var i = 0; i < Object.keys(data).length - 1 ; i++) {
-		result = result + '<br>' + i + data[i].question;
+	for (var i = 0; i < Object.keys(data).length - 2 ; i++) {
+		result = result + '<br><br>' + data[i].question + '<div class="row"><div class="col-sm-6"><br> Your Answers:' + resultCorrectAnswers(data[i].userAnswers) + '</div><div class="col-sm-6"><br> Correct Answers:' + resultUserAnswers(data[i].correctAnswers) + '</div></div><br> Score: ' +  data[i].score;
+		
 	}
 	return result;
 }
 
+function resultCorrectAnswers(correctAnswers) {
+	var answers = '';
+	for (var i = 0; i < correctAnswers.length; i++) {
+		answers = answers + '<br>' + correctAnswers[i].body;
+	}
+	return answers;	
+}
+
+function resultUserAnswers(userAnswers) {
+	var answers = '';
+	for (var i = 0; i < userAnswers.length; i++) {
+		answers = answers + '<br>' + userAnswers[i].body;
+	}
+	return answers;	
+}
 
 
 

@@ -35,7 +35,17 @@ function quiz_theme($existing, $type, $theme, $path) {
 	            				'variables' => array(	                		
 	                								'content' => 'from hook module',
 	            								),
-	              			),	              					              			              				  	
+	              			),	              					              			
+	  			'results' => array(
+	            				'variables' => array(	                		
+	                								'content' => 'from hook module',
+	            								),
+	              			),	
+	  			'result' => array(
+	            				'variables' => array(	                		
+	                								'content' => 'from hook module',
+	            								),
+	              			),		              				              			              				  	
     		);
 }
 /*
