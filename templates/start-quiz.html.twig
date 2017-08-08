@@ -1,6 +1,10 @@
 
 <form id="doQuizForm" method="post" >
+<div  class="countdown"></div>
 	<div id='question'>
+		{% if content.quiz.image %}
+			<img src="{{content.quiz.image}}"  height="420" width="420">
+		{% endif %}	
 		<h5>{{content.quiz.title}}</h5>
 		<p>{{content.quiz.body}}</p>
 	</div>
@@ -8,7 +12,8 @@
 	<input type="text" name="userId" value="{{content.user.id}}" required="true" style="display:none;">
 	<input type="text" id="questionId" name="questionId" value="0" required="true" style="display:none;">
 	<input type="text" name="quizId" value="{{content.quiz.id}}" required="true" style="display:none;">
-	<input type="submit" id="submit" value="Start" onsubmit="doQuiz();">
+	<input type="submit" id="start" value="Start" >
+	<input type="submit" id="next" value="Next"   style="display:none;">
 </form>
 
 
@@ -17,3 +22,6 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+

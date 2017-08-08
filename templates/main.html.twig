@@ -1,3 +1,11 @@
+<ul>
+  <li><a href="/quiz">Main Page</a></li>
+  <li><a href="/quiz/results">Results</a></li>
+  <li><a href="/quiz/users">Quiz Users</a></li>
+  <li><a href=""></a></li>
+</ul>
+
+
 {% set i = 1 %}
 {% for quiz in content.quizes %}
     {{i}}: <a href="/quiz/{{quiz.id}}"> {{quiz.title}} </a>

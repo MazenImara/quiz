@@ -86,6 +86,7 @@ class quizController extends ControllerBase {
 				'unAssignForm' => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\unAssignQuizForm'),
 				'editForm'     => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editUserForm'),
 				'userTries'    => quizMethods::getTries($id),
+				'delTryForm'   => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteTryForm'),
 			],
 		);
 	}
@@ -138,8 +139,9 @@ class quizController extends ControllerBase {
 					'quiz/quiz_lib',
 				],
 			],
-			'#content' => [
-				'tries'   => quizMethods::getTries(),
+			'#content'    => [
+				'tries'      => quizMethods::getTries(),
+				'delTryForm' => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteTryForm'),
 
 			],
 		);

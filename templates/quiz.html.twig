@@ -1,3 +1,15 @@
+<ul>
+  <li><a href="/quiz">Main Page</a></li>
+  <li><a href="/quiz/results">Results</a></li>
+  <li><a href="/quiz/users">Quiz Users</a></li>
+  <li><a href=""></a></li>
+</ul>
+
+
+
+{% if content.quiz.image %}
+	<img src="{{content.quiz.image}}"  height="420" width="420">
+{% endif %}
 <h4>{{content.quiz.title}}</h4> 
 {{content.quiz.body}} <br>
 <h5>Questions:</h5>
@@ -20,15 +32,15 @@
 
 
 <h5>Add question</h5>
-<form {{content.form.attributes }} method="post">
+<form {{content.form.attributes }}class="addquestion" data-drupal-selector="addquestion" enctype="multipart/form-data" action="/quiz/7" method="post" id="addquestion" accept-charset="UTF-8">
 	{{ content.form.form_build_id }}
 	{{ content.form.form_token }}
 	{{ content.form.form_id }}
 	{{ content.form.subject }}
 	{{ content.form.message }}
+	{{ content.form.image }}
 	{{ content.form.body }}
 	{{ content.form.multichoice }}
 	<input data-drupal-selector="edit-quizid" type="text" id="edit-quizid" name="quizId" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="quizId" class="form-text required hidden" required="required" aria-required="true" style="display:none;">
 	{{ content.form.actions.submit }}
 </form>
-

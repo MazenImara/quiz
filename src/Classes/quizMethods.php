@@ -5,16 +5,18 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class quizMethods {
 
-	public static function addQuiz($quiz) {
+	public static function addQuiz($quiz, $imgurl) {
 		try {
 			\Drupal::database()->insert('quiz')
 			                   ->fields([
 					'title',
-					'body'
+					'body',
+					'image',
 				])
 			->values(array(
 					$quiz['title'],
 					$quiz['body'],
+					$imgurl,
 				))
 			->execute();
 			drupal_set_message($quiz['title'].' added successfully');
@@ -25,7 +27,7 @@ class quizMethods {
 
 	static public function getAllQuizes() {
 		$query = \Drupal::database()->select('quiz', 'q');
-		$query->fields('q', ['id', 'title', 'body']);
+		$query->fields('q', ['id', 'title', 'body', 'image']);
 		$result = $query->execute();
 		$quizes = [];
 		while ($row = $result->fetchAssoc()) {
@@ -33,6 +35,7 @@ class quizMethods {
 					'id'    => $row['id'],
 					'title' => $row['title'],
 					'body'  => $row['body'],
+					'image' => $row['image'],
 				]);
 		}
 		return $quizes;
@@ -40,7 +43,7 @@ class quizMethods {
 
 	static public function getQuiz($id) {
 		$result = \Drupal::database()->select('quiz', 'q')
-		                             ->fields('q', ['id', 'title', 'body'])
+		                             ->fields('q', ['id', 'title', 'body', 'image'])
 		                             ->condition('id', [$id])
 		                             ->execute();
 		while ($row = $result->fetchAssoc()) {
@@ -48,28 +51,29 @@ class quizMethods {
 				'id'    => $row['id'],
 				'title' => $row['title'],
 				'body'  => $row['body'],
+				'image' => $row['image'],
 			];
 		}
 		return $quiz;
 	}
 
-	static public function addQuestion($question) {
+	static public function addQuestion($question, $imgurl) {
 
 		try {
 			\Drupal::database()->insert('question')
 			                   ->fields([
 					'body',
 					'multichoice',
-					'quizId'
+					'quizId',
+					'image',
 				])
 			->values(array(
 					$question['body'],
 					$question['multichoice'],
 					$question['quizId'],
+					$imgurl,
 				))
 			->execute();
-
-			drupal_set_message('Question added successfully');
 
 			$response = new RedirectResponse('question/'.self::getQuestionByBody($question['body'])['id']);
 			$response->send();
@@ -81,7 +85,7 @@ class quizMethods {
 
 	static public function getAllQuestions($quizId) {
 		$result = \Drupal::database()->select('question', 'q')
-		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId'])
+		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
 		                             ->condition('quizId', [$quizId])
 		                             ->execute();
 		$questions = [];
@@ -91,6 +95,7 @@ class quizMethods {
 					'body'        => $row['body'],
 					'multichoice' => $row['multichoice'],
 					'quizId'      => $row['quizId'],
+					'image'       => $row['image'],
 				]);
 		}
 		return $questions;
@@ -98,7 +103,7 @@ class quizMethods {
 
 	static public function getQuestionById($id) {
 		$result = \Drupal::database()->select('question', 'q')
-		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId'])
+		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
 		                             ->condition('id', [$id])
 		                             ->execute();
 		while ($row = $result->fetchAssoc()) {
@@ -107,6 +112,7 @@ class quizMethods {
 				'body'        => $row['body'],
 				'multichoice' => $row['multichoice'],
 				'quizId'      => $row['quizId'],
+				'image'       => $row['image'],
 			];
 		}
 		return $question;
@@ -114,7 +120,7 @@ class quizMethods {
 
 	static public function getQuestionByBody($body) {
 		$result = \Drupal::database()->select('question', 'q')
-		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId'])
+		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
 		                             ->condition('body', [$body])
 		                             ->execute();
 		while ($row = $result->fetchAssoc()) {
@@ -123,6 +129,7 @@ class quizMethods {
 				'body'        => $row['body'],
 				'multichoice' => $row['multichoice'],
 				'quizId'      => $row['quizId'],
+				'image'       => $row['image'],
 			];
 		}
 		return $question;
@@ -130,7 +137,7 @@ class quizMethods {
 
 	static public function getNextQuestion($questionId, $quizId) {
 		$query = \Drupal::database()->select('question', 'q')
-		                            ->fields('q', ['id', 'body', 'multichoice', 'quizId'])
+		                            ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
 		                            ->condition('quizId', [$quizId])
 		                            ->orderBy('id', 'DESC');
 
@@ -144,6 +151,7 @@ class quizMethods {
 				'body'        => $row['body'],
 				'multichoice' => $row['multichoice'],
 				'quizId'      => $row['quizId'],
+				'image'       => $row['image'],
 			];
 		}
 		return $question;
@@ -280,6 +288,11 @@ class quizMethods {
 		foreach (self::getAllQuestions($id) as $question) {
 			self::deleteQuestion($question['id']);
 		}
+
+		$query = \Drupal::database()->delete('user_quizes', [])
+		                            ->condition('quizId', [$id])
+		                            ->execute();
+
 		$query = \Drupal::database()->delete('quiz', [])
 		                            ->condition('id', [$id])
 		                            ->execute();
@@ -452,11 +465,16 @@ class quizMethods {
 	static public function login($login) {
 		if ($user = self::getUserByEmail($login['email'])) {
 			if ($user['password'] == $login['password']) {
-				session_start();
-				$_SESSION['login_user'] = $user;
-				$response               = new RedirectResponse('/userquiz');
-				$response->send();
-				drupal_set_message('login successfully');
+				if ($user['status']) {
+					session_start();
+					$_SESSION['login_user'] = $user;
+					$response               = new RedirectResponse('/userquiz');
+					$response->send();
+					drupal_set_message('login successfully');
+				} else {
+					drupal_set_message('The account is disable contact admin');
+				}
+
 			} else {
 				drupal_set_message('The password is wrong');
 			}
@@ -467,79 +485,82 @@ class quizMethods {
 
 	static public function result($tryId, $quizId, $questionId, $answer) {
 		$question = self::getQuestionById($questionId);
-		if ($question['multichoice']) {
-			$correctAnswers = self::getCorrectAnswers($questionId);
-			$score          = 0;
-			$correct        = 0;
-			$wrong          = 0;
-			foreach ($answer as $id) {
+		if (self::getAllAnswers($questionId)) {
 
-				if (self::getAnswer($id)['status']) {
-					$correct++;
-				} else {
-					$wrong++;
+			if ($question['multichoice']) {
+				$correctAnswers = self::getCorrectAnswers($questionId);
+				$score          = 0;
+				$correct        = 0;
+				$wrong          = 0;
+				foreach ($answer as $id) {
+
+					if (self::getAnswer($id)['status']) {
+						$correct++;
+					} else {
+						$wrong++;
+					}
 				}
-			}
-			$correct = $correct-$wrong;
-			if ($correct > 0) {
-				$score = $correct/count($correctAnswers);
-			}
-			\Drupal::database()->insert('quiz_result')
-			                   ->fields([
-					'tryId',
-					'quizTitle',
-					'question',
-					'score',
+				$correct = $correct-$wrong;
+				if ($correct > 0) {
+					$score = $correct/count($correctAnswers);
+				}
+				\Drupal::database()->insert('quiz_result')
+				                   ->fields([
+						'tryId',
+						'quizTitle',
+						'question',
+						'score',
 
-				])
-			->values([
-					$tryId,
-					self::getQuiz($quizId)['title'],
-					$question['body'],
-					$score,
-				])
-			->execute();
-			$result = \Drupal::database()->select('quiz_result', 'q')
-			                             ->fields('q', ['id'])
-			                             ->orderBy('id', 'ASC')
-			                             ->execute();
-			while ($row = $result->fetchAssoc()) {
-				$resultId = $row['id'];
-			}
+					])
+				->values([
+						$tryId,
+						self::getQuiz($quizId)['title'],
+						$question['body'],
+						$score,
+					])
+				->execute();
+				$result = \Drupal::database()->select('quiz_result', 'q')
+				                             ->fields('q', ['id'])
+				                             ->orderBy('id', 'ASC')
+				                             ->execute();
+				while ($row = $result->fetchAssoc()) {
+					$resultId = $row['id'];
+				}
 
-			foreach ($answer as $id) {
-				self::addUserAnswer(self::getAnswer($id)['body'], $resultId);
-			}
-			self::addCorrectAnswers($correctAnswers, $resultId);
+				foreach ($answer as $id) {
+					self::addUserAnswer(self::getAnswer($id)['body'], $resultId);
+				}
+				self::addCorrectAnswers($correctAnswers, $resultId);
 
-		} else {
-			if ($answer == self::getCorrectAnswer($questionId)['body']) {
-				$score         = 1;
-			} else { $score = 0;}
-			\Drupal::database()->insert('quiz_result')
-			                   ->fields([
-					'tryId',
-					'quizTitle',
-					'question',
-					'score',
+			} else {
+				if ($answer == self::getCorrectAnswer($questionId)['body']) {
+					$score         = 1;
+				} else { $score = 0;}
+				\Drupal::database()->insert('quiz_result')
+				                   ->fields([
+						'tryId',
+						'quizTitle',
+						'question',
+						'score',
 
-				])
-			->values([
-					$tryId,
-					self::getQuiz($quizId)['title'],
-					$question['body'],
-					$score,
-				])
-			->execute();
-			$result = \Drupal::database()->select('quiz_result', 'q')
-			                             ->fields('q', ['id'])
-			                             ->orderBy('id', 'ASC')
-			                             ->execute();
-			while ($row = $result->fetchAssoc()) {
-				$resultId = $row['id'];
+					])
+				->values([
+						$tryId,
+						self::getQuiz($quizId)['title'],
+						$question['body'],
+						$score,
+					])
+				->execute();
+				$result = \Drupal::database()->select('quiz_result', 'q')
+				                             ->fields('q', ['id'])
+				                             ->orderBy('id', 'ASC')
+				                             ->execute();
+				while ($row = $result->fetchAssoc()) {
+					$resultId = $row['id'];
+				}
+				self::addCorrectAnswer($questionId, $resultId);
+				self::addUserAnswer($answer, $resultId);
 			}
-			self::addCorrectAnswer($questionId, $resultId);
-			self::addUserAnswer($answer, $resultId);
 		}
 	}
 
@@ -671,7 +692,8 @@ class quizMethods {
 
 	static public function getTries($userId) {
 		$query = \Drupal::database()->select('quiz_try', 'q')
-		                            ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date']);
+		                            ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date'])
+		                            ->orderBy('id', 'DESC');
 		if ($userId != null) {
 			$query->condition('userId', [$userId]);
 		}
@@ -708,5 +730,38 @@ class quizMethods {
 			];
 		}
 
+	}
+
+	static public function deleteTry($try) {
+
+		$result = \Drupal::database()->select('quiz_result', 'u')
+		                             ->fields('u', ['id'])
+		                             ->condition('tryId', [$try['id']])
+		                             ->execute();
+		$resultIds = [];
+		while ($row = $result->fetchAssoc()) {
+			array_push($resultIds, [
+					'id' => $row['id'],
+				]);
+		}
+
+		foreach ($resultIds as $result) {
+			$query = \Drupal::database()->delete('quiz_user_answer', [])
+			                            ->condition('resultId', [$result['id']])
+			                            ->execute();
+
+			$query = \Drupal::database()->delete('quiz_correct_answer', [])
+			                            ->condition('resultId', [$result['id']])
+			                            ->execute();
+		}
+
+		$query = \Drupal::database()->delete('quiz_result', [])
+		                            ->condition('tryId', [$try['id']])
+		                            ->execute();
+
+		$query = \Drupal::database()->delete('quiz_try', [])
+		                            ->condition('id', [$try['id']])
+		                            ->execute();
+		drupal_set_message('Successfully deleted');
 	}
 }

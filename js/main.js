@@ -14,13 +14,16 @@ function nextQuestion(data) {
 	if (data.more == 0 ) {
 		$("#question").html('<h6>You have done</h6>');
 		$("#answers").html('your result is : ' + data.tryScore + ' % '+ result(data));				
-		$("#submit").hide();
+		$("#next").hide();
+		$(".countdown").hide();
 	}
 	else{
-		$("#question").html('<h6>' + data.question.body +  '</h6>');
+		if (data.question.image) {img = '<img src="'+ data.question.image  +'" alt="Smiley face" height="200" width="200"><br>' }else{ img = '';}
+		$("#question").html(img +'<h6>' + data.question.body +  '</h6>');
 		$("#answers").html(answers(data));
 		$("#questionId").val(data.question.id);
-		$("#submit").val('Next');		
+		$("#start").hide();
+		$("#next").show();		
 	}
 
 }
@@ -71,8 +74,30 @@ function resultUserAnswers(userAnswers) {
 	return answers;	
 }
 
+$("#start").click(function(){	
+  timer();
+});
+
+function timer(timeout) {
+	
+	var timer2 = "5:01";
+	var interval = setInterval(function() {
 
 
+	  var timer = timer2.split(':');
+	  //by parsing integer, I avoid all extra string processing
+	  var minutes = parseInt(timer[0], 10);
+	  var seconds = parseInt(timer[1], 10);
+	  --seconds;
+	  minutes = (seconds < 0) ? --minutes : minutes;
+	  if (minutes < 0) clearInterval(interval);
+	  seconds = (seconds < 0) ? 59 : seconds;
+	  seconds = (seconds < 10) ? '0' + seconds : seconds;
+	  //minutes = (minutes < 10) ?  minutes : minutes;
+	  $('.countdown').html(minutes + ':' + seconds);
+	  timer2 = minutes + ':' + seconds;
+	}, 1000);
+}
 
 
 

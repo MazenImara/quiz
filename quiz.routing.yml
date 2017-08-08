@@ -192,6 +192,14 @@ quiz.editUserForm:
   requirements:
     _role: 'authenticated'
 
+quiz.deleteTryForm:
+  path: '/deletetryform'
+  defaults:
+    _title: 'Delete Try'
+    _form: '\Drupal\quiz\Form\deleteTryForm'
+  requirements:
+    _role: 'authenticated'
+
 quiz.loginForm:
   path: '/loginform'
   defaults:

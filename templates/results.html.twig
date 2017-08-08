@@ -1,3 +1,13 @@
+<ul>
+  <li><a href="/quiz">Main Page</a></li>
+  <li><a href="/quiz/results">Results</a></li>
+  <li><a href="/quiz/users">Quiz Users</a></li>
+  <li><a href=""></a></li>
+</ul>
+
+
+
+
 <table class="table table-hover">
     <thead>
       <tr>
@@ -15,9 +25,23 @@
             <td><a href="/quiz/result/{{try.id}}"> {{try.quizTitle}} </a></td>
             <td>{{try.score}}</td>
             <td>{{try.date}}</td>
+            <td>
+                <form {{content.delTryForm.attributes }} method="post">
+                    {{ content.delTryForm.form_build_id }}
+                    {{ content.delTryForm.form_token }}
+                    {{ content.delTryForm.form_id }}
+                    {{ content.delTryForm.subject }}
+                    {{ content.delTryForm.message }}
+                    <input data-drupal-selector="edit-id" type="text" id="edit-id" name="id" value="{{try.id}}" size="60" maxlength="128" placeholder="tryId" class="form-text required" required="required" aria-required="true" style="display:none;">
+                    {{ content.delTryForm.actions.submit }}
+                </form>
+            </td>
         </tr>
 
     {% endfor %}
 
     </tbody>
 </table>
+
+
+
