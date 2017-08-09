@@ -19,12 +19,22 @@ class quizMethods {
 					$imgurl,
 				))
 			->execute();
+			$response = new RedirectResponse('quiz/'.self::getLast('quiz'));
+			$response->send();
 			drupal_set_message($quiz['title'].' added successfully');
 		} catch (\Exception $e) {
 			drupal_set_message('Error happen when adding quiz');
 		}
 	}
-
+	static public function getLast($table) {
+		$result = \Drupal::database()->select($table, 'q')
+		                             ->fields('q', ['id'])
+		                             ->orderBy('id', 'DESC')
+		                             ->execute();
+		while ($row = $result->fetchAssoc()) {
+			return $row['id'];
+		}
+	}
 	static public function getAllQuizes() {
 		$query = \Drupal::database()->select('quiz', 'q');
 		$query->fields('q', ['id', 'title', 'body', 'image']);
@@ -75,7 +85,7 @@ class quizMethods {
 				))
 			->execute();
 
-			$response = new RedirectResponse('question/'.self::getQuestionByBody($question['body'])['id']);
+			$response = new RedirectResponse('question/'.self::getLast('question'));
 			$response->send();
 
 		} catch (\Exception $e) {
@@ -105,23 +115,6 @@ class quizMethods {
 		$result = \Drupal::database()->select('question', 'q')
 		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
 		                             ->condition('id', [$id])
-		                             ->execute();
-		while ($row = $result->fetchAssoc()) {
-			$question = [
-				'id'          => $row['id'],
-				'body'        => $row['body'],
-				'multichoice' => $row['multichoice'],
-				'quizId'      => $row['quizId'],
-				'image'       => $row['image'],
-			];
-		}
-		return $question;
-	}
-
-	static public function getQuestionByBody($body) {
-		$result = \Drupal::database()->select('question', 'q')
-		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
-		                             ->condition('body', [$body])
 		                             ->execute();
 		while ($row = $result->fetchAssoc()) {
 			$question = [
@@ -468,6 +461,7 @@ class quizMethods {
 				if ($user['status']) {
 					session_start();
 					$_SESSION['login_user'] = $user;
+					$_SESSION['timeout']    = time()+(20);
 					$response               = new RedirectResponse('/userquiz');
 					$response->send();
 					drupal_set_message('login successfully');
@@ -480,6 +474,19 @@ class quizMethods {
 			}
 		} else {
 			drupal_set_message('This email is not reqistered');
+		}
+	}
+
+	static public function timeout() {
+		drupal_set_message($_SESSION['timeout'].'---'.time());
+		if (time() > $_SESSION['timeout']) {
+			drupal_set_message('big');
+			if (isset($_SESSION['login_user'])) {
+				unset($_SESSION['login_user']);
+				unset($_SESSION['timeout']);
+			}
+			//$response = new RedirectResponse('/userquiz');
+			//$response->send();
 		}
 	}
 
@@ -519,14 +526,7 @@ class quizMethods {
 						$score,
 					])
 				->execute();
-				$result = \Drupal::database()->select('quiz_result', 'q')
-				                             ->fields('q', ['id'])
-				                             ->orderBy('id', 'ASC')
-				                             ->execute();
-				while ($row = $result->fetchAssoc()) {
-					$resultId = $row['id'];
-				}
-
+				$resultId = self::getLast('quiz_result');
 				foreach ($answer as $id) {
 					self::addUserAnswer(self::getAnswer($id)['body'], $resultId);
 				}
@@ -551,13 +551,7 @@ class quizMethods {
 						$score,
 					])
 				->execute();
-				$result = \Drupal::database()->select('quiz_result', 'q')
-				                             ->fields('q', ['id'])
-				                             ->orderBy('id', 'ASC')
-				                             ->execute();
-				while ($row = $result->fetchAssoc()) {
-					$resultId = $row['id'];
-				}
+				$resultId = self::getLast('quiz_result');
 				self::addCorrectAnswer($questionId, $resultId);
 				self::addUserAnswer($answer, $resultId);
 			}
@@ -686,13 +680,7 @@ class quizMethods {
 				date("Y-m-d H:i:s"),
 			])
 		->execute();
-		$result = \Drupal::database()->select('quiz_try', 'q')
-		                             ->fields('q', ['id'])
-		                             ->orderBy('id', 'DESC')
-		                             ->execute();
-		while ($row = $result->fetchAssoc()) {
-			return $row['id'];
-		}
+		return self::getLast('quiz_try');
 	}
 
 	static public function getTries($userId) {

@@ -92,6 +92,7 @@ class quizController extends ControllerBase {
 	}
 
 	public function userQuiz() {
+		quizMethods::timeout();
 		$user = $_SESSION['login_user'];
 		return array(
 			'#theme'    => 'user_quiz',
@@ -109,6 +110,7 @@ class quizController extends ControllerBase {
 	}
 
 	public function startQuiz($id) {
+		quizMethods::timeout();
 		if (!isset($_SESSION['login_user'])) {
 			$response = new RedirectResponse('/userquiz');
 			$response->send();
@@ -166,11 +168,12 @@ class quizController extends ControllerBase {
 		if (isset($_SESSION['login_user'])) {
 			unset($_SESSION['login_user']);
 		}
-		$response = new RedirectResponse('/');
+		$response = new RedirectResponse('/userquiz');
 		$response->send();
 	}
 
 	public function ajaxQuiz() {
+		quizMethods::timeout();
 		if (!isset($_SESSION['login_user'])) {
 			return new JsonResponse(['login' => '0']);
 		} else {
