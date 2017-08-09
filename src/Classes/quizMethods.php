@@ -677,10 +677,15 @@ class quizMethods {
 		return $answers;
 	}
 	static public function addTry($userId, $quizTitle) {
+		$date = date("Y-m-d H:i:s");
 		\Drupal::database()->insert('quiz_try')
-		                   ->fields(['quizTitle', 'userId'])
-		                   ->values([$quizTitle, $userId, ])
-		                   ->execute();
+		                   ->fields(['quizTitle', 'userId', 'date'])
+		                   ->values([
+				$quizTitle,
+				$userId,
+				date("Y-m-d H:i:s"),
+			])
+		->execute();
 		$result = \Drupal::database()->select('quiz_try', 'q')
 		                             ->fields('q', ['id'])
 		                             ->orderBy('id', 'DESC')
