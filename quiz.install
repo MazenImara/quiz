@@ -1,6 +1,6 @@
 <?php
 
-function test_schema() {
+function quiz_schema() {
   if (!db_table_exists('quiz')) {
     $schema['quiz'] = array(
       'fields' => array(
