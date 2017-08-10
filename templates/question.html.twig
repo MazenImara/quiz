@@ -15,12 +15,13 @@
 	{% set checked = '' %}
 {% endif %}
 
-<form {{content.editForm.attributes }} method="post">
+<form {{content.editForm.attributes }} method="post" enctype="multipart/form-data">
 	{{ content.editForm.form_build_id }}
 	{{ content.editForm.form_token }}
 	{{ content.editForm.form_id }}
 	{{ content.editForm.subject }}
 	{{ content.editForm.message }}
+	{{ content.editForm.image }}
 	<div>
 	  <textarea data-drupal-selector="edit-body" id="edit-body--2" name="body" rows="5" cols="60" placeholder="Question?" class="form-textarea required" required="required" aria-required="true">{{content.question.body}}</textarea>
 	</div>

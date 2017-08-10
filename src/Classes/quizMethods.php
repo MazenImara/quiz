@@ -324,7 +324,15 @@ class quizMethods {
 		                            ->execute();
 	}
 
-	static public function editQuestion($question) {
+	static public function editQuestion($question, $imageUrl) {
+		if ($imageUrl) {
+			\Drupal::database()->update('question')
+			                   ->condition('id', [$question['id']])
+			                   ->fields([
+					'image' => $imageUrl,
+				])
+				->execute();
+		}
 		if ($question['multichoice']) {
 			\Drupal::database()->update('question')
 			                   ->condition('id', [$question['id']])
