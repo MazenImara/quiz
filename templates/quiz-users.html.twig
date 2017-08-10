@@ -23,7 +23,7 @@
 	        <td><a href="/quiz/user/{{user.id}}">{{user.name}}</a></td>
 	        <td>{{user.email}}</td>
 	        <td>{{user.password}}</td>
-	        <td>{{user.status}}</td>
+	        <td>{% if user.status %}Active{% else %}Unactive{% endif %} </td>
 	      </tr>		    
 		{% endfor %}
     </tbody>
