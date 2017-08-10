@@ -1,0 +1,29 @@
+quiz.quiz:
+  title: 'Quiz Module'
+  description: 'to create quiz '
+  parent: system.admin
+  url: internal:/quiz
+
+quiz.addQuiz:
+  title: 'Create Quiz'
+  description: 'to create and manage quiz'
+  parent: quiz.quiz
+  url: internal:/quiz
+
+quiz.quisUsers:
+  title: 'Quiz Users'
+  description: 'to manage quiz users'
+  parent: quiz.quiz
+  url: internal:/quiz/users
+
+quiz.quisResults:
+  title: 'Quiz Results'
+  description: 'to display and manage results'
+  parent: quiz.quiz
+  url: internal:/quiz/results
+
+quiz.userQuiz:
+  title: 'User Quiz'
+  description: 'quiz to the user'
+  parent: quiz.quiz
+  url: internal:/userquiz

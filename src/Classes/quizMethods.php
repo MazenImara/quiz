@@ -461,7 +461,7 @@ class quizMethods {
 				if ($user['status']) {
 					session_start();
 					$_SESSION['login_user'] = $user;
-					$_SESSION['timeout']    = time()+(20);
+					$_SESSION['timeout']    = time()+(30*60);
 					$response               = new RedirectResponse('/userquiz');
 					$response->send();
 					drupal_set_message('login successfully');
@@ -478,15 +478,11 @@ class quizMethods {
 	}
 
 	static public function timeout() {
-		drupal_set_message($_SESSION['timeout'].'---'.time());
 		if (time() > $_SESSION['timeout']) {
-			drupal_set_message('big');
 			if (isset($_SESSION['login_user'])) {
 				unset($_SESSION['login_user']);
 				unset($_SESSION['timeout']);
 			}
-			//$response = new RedirectResponse('/userquiz');
-			//$response->send();
 		}
 	}
 
