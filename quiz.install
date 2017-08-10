@@ -13,7 +13,7 @@ function test_schema() {
     );    
   }
 
-  if (!db_table_exists('quiz')) {
+  if (!db_table_exists('question')) {
     $schema['question'] = array(
       'fields' => array(
         'id' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
@@ -26,7 +26,7 @@ function test_schema() {
     );    
   }
     
-  if (!db_table_exists('quiz')) {
+  if (!db_table_exists('answer')) {
     $schema['answer'] = array(
       'fields' => array(
         'id' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
@@ -37,7 +37,7 @@ function test_schema() {
       'primary key' => array('id'),
     );      
   } 
-  if (!db_table_exists('quiz')) {
+  if (!db_table_exists('quiz_user')) {
     $schema['quiz_user'] = array(
       'fields' => array(
         'id' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
@@ -49,7 +49,7 @@ function test_schema() {
       'primary key' => array('id'),
     );     
   }
-  if (!db_table_exists('quiz')) {
+  if (!db_table_exists('user_quizes')) {
     $schema['user_quizes'] = array(
       'fields' => array(
         'id' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
@@ -59,7 +59,7 @@ function test_schema() {
       'primary key' => array('id'),
     );      
   }
-  if (!db_table_exists('quiz')) {
+  if (!db_table_exists('quiz_user_answer')) {
     $schema['quiz_user_answer'] = array(
       'fields' => array(
         'id' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
@@ -69,7 +69,7 @@ function test_schema() {
       'primary key' => array('id'),
     );    
   }  
-  if (!db_table_exists('quiz')) {
+  if (!db_table_exists('quiz_correct_answer')) {
     $schema['quiz_correct_answer'] = array(
       'fields' => array(
         'id' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
@@ -79,7 +79,7 @@ function test_schema() {
       'primary key' => array('id'),
     );      
   }
-  if (!db_table_exists('quiz')) {
+  if (!db_table_exists('quiz_result')) {
     $schema['quiz_result'] = array(
       'fields' => array(
         'id' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),  
@@ -91,7 +91,7 @@ function test_schema() {
       'primary key' => array('id'),
     );     
   }
-  if (!db_table_exists('quiz')) {
+  if (!db_table_exists('quiz_try')) {
     $schema['quiz_try'] = array(
       'fields' => array(
         'id' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
