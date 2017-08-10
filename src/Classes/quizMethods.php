@@ -26,7 +26,23 @@ class quizMethods {
 			drupal_set_message('Error happen when adding quiz');
 		}
 	}
-
+	static public function editQuiz($quiz, $imageUrl) {
+		\Drupal::database()->update('quiz')
+		                   ->condition('id', [$quiz['id']])
+		                   ->fields([
+				'title' => $quiz['title'],
+				'body'  => $quiz['body'],
+			])
+			->execute();
+		if ($imageUrl) {
+			\Drupal::database()->update('quiz')
+			                   ->condition('id', [$quiz['id']])
+			                   ->fields([
+					'image' => $imageUrl,
+				])
+				->execute();
+		}
+	}
 	static public function changeShowResult($quiz) {
 		if (self::getQuiz($quiz['id'])['showResult']) {
 			\Drupal::database()->update('quiz')

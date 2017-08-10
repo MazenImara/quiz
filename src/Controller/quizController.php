@@ -36,6 +36,7 @@ class quizController extends ControllerBase {
 				'deleteForm'     => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteQuestionForm'),
 				'questions'      => quizMethods::getAllQuestions($id),
 				'showResultForm' => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\changeShowResultForm'),
+				'editQuizForm'   => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editQuizForm'),
 			],
 		);
 	}

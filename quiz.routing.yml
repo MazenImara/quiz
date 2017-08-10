@@ -95,6 +95,14 @@ quiz.addquizform:
   requirements:
     _role: 'authenticated'
 
+quiz.editquizform:
+  path: '/editquizform'
+  defaults:
+    _title: 'Edit Quiz'
+    _form: '\Drupal\quiz\Form\editQuizForm'
+  requirements:
+    _role: 'authenticated'
+
 quiz.addQuestionForm:
   path: '/addquestionform'
   defaults:

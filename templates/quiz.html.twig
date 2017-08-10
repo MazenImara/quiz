@@ -28,8 +28,23 @@ The result is hidden to user
 {% if content.quiz.image %}
 	<br><img src="{{content.quiz.image}}"  height="420" width="420">
 {% endif %}
-<h4>{{content.quiz.title}}</h4> 
-{{content.quiz.body}} <br>
+
+<form {{content.editQuizForm.attributes }} method="post" enctype="multipart/form-data">
+	{{ content.editQuizForm.form_build_id }}
+	{{ content.editQuizForm.form_token }}
+	{{ content.editQuizForm.form_id }}
+	{{ content.editQuizForm.subject }}
+	{{ content.editQuizForm.message }}
+	{{ content.editQuizForm.image }}
+	<input data-drupal-selector="edit-title" type="text" id="edit-title" name="title" value="{{content.quiz.title}}" size="60" maxlength="128" placeholder="Title" class="form-text required" required="required" aria-required="true">
+	<textarea data-drupal-selector="edit-body" id="edit-body--2" name="body" rows="5" cols="60" placeholder="Quiz Description" class="form-textarea required" required="required" aria-required="true">{{content.quiz.body}}</textarea>
+	<input data-drupal-selector="edit-id" type="text" id="edit-id--2" name="id" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="id" class="form-text required" required="required" aria-required="true">
+	{{ content.editQuizForm.actions.submit }}
+</form>
+
+
+
+ <br>
 <h5>Questions:</h5>
 {% set i = 1 %}
 {% for question in content.questions %}
