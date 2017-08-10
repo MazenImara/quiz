@@ -135,6 +135,14 @@ quiz.ChangeAnswerStatusMultiForm:
   requirements:
     _role: 'authenticated'
 
+quiz.changeShowResultForm:
+  path: '/changeshowresultform'
+  defaults:
+    _title: 'Cahnge Show Result'
+    _form: '\Drupal\quiz\Form\changeShowResultForm'
+  requirements:
+    _role: 'authenticated'    
+
 quiz.deleteQuestionForm:
   path: '/deletequestionform'
   defaults:

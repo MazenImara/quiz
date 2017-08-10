@@ -5,10 +5,28 @@
   <li><a href=""></a></li>
 </ul>
 
+<a href="/quiz">< Main</a><br><br>
+
+<form {{content.showResultForm.attributes }} method="post">
+	{{ content.showResultForm.form_build_id }}
+	{{ content.showResultForm.form_token }}
+	{{ content.showResultForm.form_id }}
+	{{ content.showResultForm.subject }}
+	{{ content.showResultForm.message }}
+	<input data-drupal-selector="edit-id" type="text" id="edit-id" name="id" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="quizId" class="form-text required" required="required" aria-required="true" style="display:none;">
+	
+	{{ content.showResultForm.actions.submit }}
+</form>
+{% if content.quiz.showResult %}
+The result is visible to user 
+{% else %}
+The result is hidden to user
+{% endif %}
+
 
 
 {% if content.quiz.image %}
-	<img src="{{content.quiz.image}}"  height="420" width="420">
+	<br><img src="{{content.quiz.image}}"  height="420" width="420">
 {% endif %}
 <h4>{{content.quiz.title}}</h4> 
 {{content.quiz.body}} <br>

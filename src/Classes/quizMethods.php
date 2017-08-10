@@ -26,6 +26,21 @@ class quizMethods {
 			drupal_set_message('Error happen when adding quiz');
 		}
 	}
+
+	static public function changeShowResult($quiz) {
+		if (self::getQuiz($quiz['id'])['showResult']) {
+			\Drupal::database()->update('quiz')
+			                   ->condition('id', [$quiz['id']])
+			                   ->fields(['showResult' => 0, ])
+				->execute();
+		} else {
+			\Drupal::database()->update('quiz')
+			                   ->condition('id', [$quiz['id']])
+			                   ->fields(['showResult' => 1, ])
+				->execute();
+		}
+	}
+
 	static public function getLast($table) {
 		$result = \Drupal::database()->select($table, 'q')
 		                             ->fields('q', ['id'])
@@ -37,15 +52,16 @@ class quizMethods {
 	}
 	static public function getAllQuizes() {
 		$query = \Drupal::database()->select('quiz', 'q');
-		$query->fields('q', ['id', 'title', 'body', 'image']);
+		$query->fields('q', ['id', 'title', 'body', 'image', 'showResult']);
 		$result = $query->execute();
 		$quizes = [];
 		while ($row = $result->fetchAssoc()) {
 			array_push($quizes, [
-					'id'    => $row['id'],
-					'title' => $row['title'],
-					'body'  => $row['body'],
-					'image' => $row['image'],
+					'id'         => $row['id'],
+					'title'      => $row['title'],
+					'body'       => $row['body'],
+					'image'      => $row['image'],
+					'showResult' => $row['showResult'],
 				]);
 		}
 		return $quizes;
@@ -53,15 +69,16 @@ class quizMethods {
 
 	static public function getQuiz($id) {
 		$result = \Drupal::database()->select('quiz', 'q')
-		                             ->fields('q', ['id', 'title', 'body', 'image'])
+		                             ->fields('q', ['id', 'title', 'body', 'image', 'showResult'])
 		                             ->condition('id', [$id])
 		                             ->execute();
 		while ($row = $result->fetchAssoc()) {
 			$quiz = [
-				'id'    => $row['id'],
-				'title' => $row['title'],
-				'body'  => $row['body'],
-				'image' => $row['image'],
+				'id'         => $row['id'],
+				'title'      => $row['title'],
+				'body'       => $row['body'],
+				'image'      => $row['image'],
+				'showResult' => $row['showResult'],
 			];
 		}
 		return $quiz;

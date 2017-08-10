@@ -28,16 +28,14 @@ class quizController extends ControllerBase {
 		);
 	}
 	public function quiz($id) {
-		$form       = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addQuestionForm');
-		$deleteForm = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteQuestionForm');
-
 		return array(
-			'#theme'      => 'quiz',
-			'#content'    => [
-				'quiz'       => quizMethods::getQuiz($id),
-				'form'       => $form,
-				'deleteForm' => $deleteForm,
-				'questions'  => quizMethods::getAllQuestions($id),
+			'#theme'          => 'quiz',
+			'#content'        => [
+				'quiz'           => quizMethods::getQuiz($id),
+				'form'           => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addQuestionForm'),
+				'deleteForm'     => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteQuestionForm'),
+				'questions'      => quizMethods::getAllQuestions($id),
+				'showResultForm' => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\changeShowResultForm'),
 			],
 		);
 	}
