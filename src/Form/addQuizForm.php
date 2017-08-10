@@ -40,7 +40,7 @@ class addQuizForm extends FormBase {
 		);
 		$form['body'] = array(
 			'#type'        => 'textarea',
-			'#placeholder' => t('body'),
+			'#placeholder' => t('Quiz Description'),
 			'#required'    => TRUE,
 			'#resizable'   => TRUE,
 		);

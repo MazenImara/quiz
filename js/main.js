@@ -80,7 +80,7 @@ $("#start").click(function(){
 
 function timer(timeout) {
 	
-	var timer2 = "5:01";
+	var timer2 = "0:00";
 	var interval = setInterval(function() {
 
 
@@ -88,10 +88,10 @@ function timer(timeout) {
 	  //by parsing integer, I avoid all extra string processing
 	  var minutes = parseInt(timer[0], 10);
 	  var seconds = parseInt(timer[1], 10);
-	  --seconds;
-	  minutes = (seconds < 0) ? --minutes : minutes;
-	  if (minutes < 0) clearInterval(interval);
-	  seconds = (seconds < 0) ? 59 : seconds;
+	  ++seconds;
+	  minutes = (seconds > 59) ? ++minutes : minutes;
+	  if (minutes > 59) clearInterval(interval);
+	  seconds = (seconds > 59) ? 0 : seconds;
 	  seconds = (seconds < 10) ? '0' + seconds : seconds;
 	  //minutes = (minutes < 10) ?  minutes : minutes;
 	  $('.countdown').html(minutes + ':' + seconds);
