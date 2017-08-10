@@ -183,6 +183,14 @@ quiz.addUserForm:
   requirements:
     _role: 'authenticated'
 
+quiz.deleteUserForm:
+  path: '/deleteuserform'
+  defaults:
+    _title: 'Delete User'
+    _form: '\Drupal\quiz\Form\deleteUserForm'
+  requirements:
+    _role: 'authenticated'
+
 quiz.assignQuizForm:
   path: '/assignquiz'
   defaults:

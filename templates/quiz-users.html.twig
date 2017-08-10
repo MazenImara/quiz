@@ -24,6 +24,17 @@
 	        <td>{{user.email}}</td>
 	        <td>{{user.password}}</td>
 	        <td>{% if user.status %}Active{% else %}Unactive{% endif %} </td>
+          <td>
+                <form {{content.deleteUserForm.attributes }} method="post">
+                    {{ content.deleteUserForm.form_build_id }}
+                    {{ content.deleteUserForm.form_token }}
+                    {{ content.deleteUserForm.form_id }}
+                    {{ content.deleteUserForm.subject }}
+                    {{ content.deleteUserForm.message }}
+                    <input data-drupal-selector="edit-id" type="text" id="edit-id" name="id" value="{{user.id}}" size="60" maxlength="128" placeholder="id" class="form-text required" required="required" aria-required="true" style="display:none;">
+                    {{ content.deleteUserForm.actions.submit }}
+                </form>
+          </td>
 	      </tr>		    
 		{% endfor %}
     </tbody>

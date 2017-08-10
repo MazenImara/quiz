@@ -62,12 +62,12 @@ class quizController extends ControllerBase {
 	}
 
 	public function quizUsers() {
-		$form = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addUserForm');
 		return array(
-			'#theme'   => 'quiz_users',
-			'#content' => [
-				'users'   => quizMethods::getAllUsers(),
-				'form'    => $form,
+			'#theme'          => 'quiz_users',
+			'#content'        => [
+				'users'          => quizMethods::getAllUsers(),
+				'form'           => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addUserForm'),
+				'deleteUserForm' => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteUserForm'),
 
 			],
 		);

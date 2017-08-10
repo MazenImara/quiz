@@ -384,6 +384,25 @@ class quizMethods {
 		}
 	}
 
+	static public function deleteUser($id) {
+
+		$result = \Drupal::database()->select('quiz_try', 'q')
+		                             ->fields('q', ['id'])
+		                             ->condition('userId', [$id])
+		                             ->execute();
+		$trys = [];
+		while ($row = $result->fetchAssoc()) {
+			array_push($trys, [
+					'id' => $row['id'],
+				]);
+		}
+		foreach ($trys as $try) {
+			self::deleteTry($try);
+		}
+		$query = \Drupal::database()->delete('quiz_user', [])
+		                            ->condition('id', [$id])
+		                            ->execute();
+	}
 	static public function getAllUsers() {
 		$result = \Drupal::database()->select('quiz_user', 'u')
 		                             ->fields('u', ['id', 'name', 'email', 'password', 'status'])
