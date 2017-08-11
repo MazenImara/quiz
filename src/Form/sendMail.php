@@ -52,8 +52,8 @@ class sendMail extends FormBase {
 		$module            = 'quiz';
 		$key               = 'my_key';// Replace with Your key
 		$to                = \Drupal::currentUser()->getEmail();
-		$params['message'] = '$message';
-		$params['title']   = '$label';
+		$params['message'] = $message;
+		$params['title']   = $label;
 		$langcode          = \Drupal::currentUser()->getPreferredLangcode();
 		$send              = true;
 
