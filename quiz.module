@@ -60,7 +60,7 @@ function quiz_mail($key, &$message, $params) {
     'langcode' => $message['langcode'],
   );
   switch ($key) {
-    case 'node_insert':
+    case 'test':
       $message['from'] = \Drupal::config('system.site')->get('mail');
       $message['subject'] = t('Your mail subject Here: @title', array('@title' => $params['title']), $options);
       $message['body'][] = Html::escape($params['message']);
