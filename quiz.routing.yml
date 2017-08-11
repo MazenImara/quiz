@@ -233,3 +233,10 @@ quiz.loginForm:
     _permission: 'access content'
 
 
+quiz.sendMail:
+  path: '/send'
+  defaults:
+    _title: 'Send Mail'
+    _form: '\Drupal\quiz\Form\sendMail'
+  requirements:
+    _role: 'authenticated'

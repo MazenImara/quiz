@@ -48,8 +48,35 @@ function quiz_theme($existing, $type, $theme, $path) {
 	              			),		              				              			              				  	
     		);
 }
+
+use Drupal\Core\Mail\MailManagerInterface;
+use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Component\Utility\Html;
+/**
+ * Implements hook_mail().
+ */
+function quiz_mail($key, &$message, $params) {
+  $options = array(
+    'langcode' => $message['langcode'],
+  );
+  switch ($key) {
+    case 'node_insert':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = t('Your mail subject Here: @title', array('@title' => $params['title']), $options);
+      $message['body'][] = Html::escape($params['message']);
+      break;
+  }
+}
+
+
+
+
+
+
 /*
 function rosenserien_custom_blocks_module_template_preprocess_default_variables_alter(&$variables) {
   $variables['title_arrow'] ='/' . drupal_get_path('module', 'storleden_module') . '/images/icon/heading-arrow.png';
 }
 */
+
+
