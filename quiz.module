@@ -62,8 +62,8 @@ function quiz_mail($key, &$message, $params) {
   switch ($key) {
     case 'node_insert':
       $message['from'] = \Drupal::config('system.site')->get('mail');
-      $message['subject'] = t('Your mail subject Here: @title', array('@title' => $params['title']), $options);
-      $message['body'][] = Html::escape($params['message']);
+      $message['subject'] = 'this is subject';
+      $message['body'][] = Html::escape('this is body of mail');
       break;
   }
 }
@@ -74,6 +74,21 @@ function quiz_mail($key, &$message, $params) {
 
 
 /*
+function quiz_mail($key, &$message, $params) {
+  $options = array(
+    'langcode' => $message['langcode'],
+  );
+  switch ($key) {
+    case 'node_insert':
+      $message['from'] = \Drupal::config('system.site')->get('mail');
+      $message['subject'] = t('Your mail subject Here: @title', array('@title' => $params['title']), $options);
+      $message['body'][] = Html::escape($params['message']);
+      break;
+  }
+}
+
+
+
 function rosenserien_custom_blocks_module_template_preprocess_default_variables_alter(&$variables) {
   $variables['title_arrow'] ='/' . drupal_get_path('module', 'storleden_module') . '/images/icon/heading-arrow.png';
 }
