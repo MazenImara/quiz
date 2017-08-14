@@ -48,7 +48,6 @@ function quiz_theme($existing, $type, $theme, $path) {
 	              			),		              				              			              				  	
     		);
 }
-
 use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Component\Utility\Html;
@@ -69,17 +68,5 @@ function quiz_mail($key, &$message, $params) {
 }
 
 
-
-
-
-
-/*
-
-
-$message['body'][] = Html::escape($params['message']);
-function rosenserien_custom_blocks_module_template_preprocess_default_variables_alter(&$variables) {
-  $variables['title_arrow'] ='/' . drupal_get_path('module', 'storleden_module') . '/images/icon/heading-arrow.png';
-}
-*/
 
 

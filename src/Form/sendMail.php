@@ -69,6 +69,8 @@ class sendMail extends FormBase {
 		drupal_set_message($message);
 		\Drupal::logger('mail-log')->notice($message);
 
+
+
 	}
 
 }

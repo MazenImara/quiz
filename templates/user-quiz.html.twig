@@ -1,22 +1,10 @@
 {% if content.user.name == null %}
 	{{content.loginForm}}
-	
-
-
-
-
-
-
-
 
 {% else %}
 	<h3> Hello: {{content.user.name}} </h3><a href="/userquiz/logout">Logout</a><br>
 	{% for quiz in content.userQuizes %}
 		<a href="/startquiz/{{quiz.id}}"> {{quiz.title}} </a><br>
 	{% endfor %}
-
-
-
-  
 {% endif %}
 

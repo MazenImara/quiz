@@ -1,9 +1,4 @@
-<ul>
-  <li><a href="/quiz">Main Page</a></li>
-  <li><a href="/quiz/results">Results</a></li>
-  <li><a href="/quiz/users">Quiz Users</a></li>
-  <li><a href=""></a></li>
-</ul>
+
 
 <a href="/quiz">< Main</a><br><br>
 
@@ -38,7 +33,7 @@ The result is hidden to user
 	{{ content.editQuizForm.image }}
 	<input data-drupal-selector="edit-title" type="text" id="edit-title" name="title" value="{{content.quiz.title}}" size="60" maxlength="128" placeholder="Title" class="form-text required" required="required" aria-required="true">
 	<textarea data-drupal-selector="edit-body" id="edit-body--2" name="body" rows="5" cols="60" placeholder="Quiz Description" class="form-textarea required" required="required" aria-required="true">{{content.quiz.body}}</textarea>
-	<input data-drupal-selector="edit-id" type="text" id="edit-id--2" name="id" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="id" class="form-text required" required="required" aria-required="true">
+	<input data-drupal-selector="edit-id" type="text" id="edit-id--2" name="id" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="id" class="form-text required" required="required" aria-required="true" style="display:none;">
 	{{ content.editQuizForm.actions.submit }}
 </form>
 

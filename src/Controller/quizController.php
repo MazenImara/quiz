@@ -91,8 +91,12 @@ class quizController extends ControllerBase {
 	}
 
 	public function userQuiz() {
+		$user = null;
 		quizMethods::timeout();
-		$user = $_SESSION['login_user'];
+		if (isset($_SESSION['login_user'])) {
+			$user = $_SESSION['login_user'];
+		}
+		
 		return array(
 			'#theme'    => 'user_quiz',
 			'#attached' => [
@@ -110,13 +114,16 @@ class quizController extends ControllerBase {
 
 	public function startQuiz($id) {
 		quizMethods::timeout();
+		$user = null;
 		if (!isset($_SESSION['login_user'])) {
 			$response = new RedirectResponse('/userquiz');
 			$response->send();
+		}else {
+			$user = $_SESSION['login_user'];
+			$quiz = quizMethods::getQuiz($id);
+			$_SESSION['tryId'] = quizMethods::addTry($user['id'], $quiz['title']);
 		}
-		$quiz = quizMethods::getQuiz($id);
-		session_start();
-		$_SESSION['tryId'] = quizMethods::addTry($_SESSION['login_user']['id'], $quiz['title']);
+
 		return array(
 			'#theme'    => 'start_quiz',
 			'#attached' => [
@@ -125,7 +132,7 @@ class quizController extends ControllerBase {
 				],
 			],
 			'#content' => [
-				'user'    => $_SESSION['login_user'],
+				'user'    => $user,
 				'quiz'    => $quiz,
 			],
 		);
@@ -166,9 +173,14 @@ class quizController extends ControllerBase {
 	public function logout() {
 		if (isset($_SESSION['login_user'])) {
 			unset($_SESSION['login_user']);
+			unset($_SESSION['timeout']);
 		}
 		$response = new RedirectResponse('/userquiz');
 		$response->send();
+		return [
+	      '#type' => 'markup',
+	      '#markup' => $this->t('Hello, World!'),
+    	];
 	}
 
 	public function ajaxQuiz() {
@@ -177,7 +189,11 @@ class quizController extends ControllerBase {
 			return new JsonResponse(['login' => '0']);
 		} else {
 			if ($_POST['questionId'] != '0') {
-				quizMethods::result($_SESSION['tryId'], $_POST['quizId'], $_POST['questionId'], $_POST['userAnswer']);
+				$userAnswer = null;
+				if (isset($_POST['userAnswer'])) {
+					$userAnswer = $_POST['userAnswer'];
+				}
+				quizMethods::result($_SESSION['tryId'], $_POST['quizId'], $_POST['questionId'], $userAnswer);
 			}
 			if ($nextQuestion = quizMethods::getNextQuestion($_POST['questionId'], $_POST['quizId'])) {
 				$questionWithAnswer = [

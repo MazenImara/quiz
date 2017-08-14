@@ -162,6 +162,7 @@ class quizMethods {
 	}
 
 	static public function getNextQuestion($questionId, $quizId) {
+		$question = null;
 		$query = \Drupal::database()->select('question', 'q')
 		                            ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
 		                            ->condition('quizId', [$quizId])
@@ -519,7 +520,9 @@ class quizMethods {
 		if ($user = self::getUserByEmail($login['email'])) {
 			if ($user['password'] == $login['password']) {
 				if ($user['status']) {
-					session_start();
+					if (session_status() == PHP_SESSION_NONE) {
+					    session_start();
+					}
 					$_SESSION['login_user'] = $user;
 					$_SESSION['timeout']    = time()+(30*60);
 					$response               = new RedirectResponse('/userquiz');
@@ -538,7 +541,7 @@ class quizMethods {
 	}
 
 	static public function timeout() {
-		if (time() > $_SESSION['timeout']) {
+		if (isset($_SESSION['timeout']) && time() > $_SESSION['timeout']) {
 			if (isset($_SESSION['login_user'])) {
 				unset($_SESSION['login_user']);
 				unset($_SESSION['timeout']);
@@ -739,7 +742,7 @@ class quizMethods {
 		return self::getLast('quiz_try');
 	}
 
-	static public function getTries($userId) {
+	static public function getTries($userId = null) {
 		$query = \Drupal::database()->select('quiz_try', 'q')
 		                            ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date'])
 		                            ->orderBy('id', 'DESC');

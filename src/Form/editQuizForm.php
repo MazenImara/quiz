@@ -31,7 +31,7 @@ class editQuizForm extends FormBase {
 			'#default_value'   => isset($config['photo'])?$config['photo']:'',
 			'#upload_location' => 'public://images/',
 			'#required'        => FALSE,
-			'#theme'           => 'advphoto_thumb_upload',
+			'#theme'           => '',
 		);
 		$form['title'] = array(
 			'#type'        => 'textfield',

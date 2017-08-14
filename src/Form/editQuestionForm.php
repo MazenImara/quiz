@@ -31,7 +31,7 @@ class editQuestionForm extends FormBase {
 			'#default_value'   => isset($config['photo'])?$config['photo']:'',
 			'#upload_location' => 'public://images/',
 			'#required'        => FALSE,
-			'#theme'           => 'advphoto_thumb_upload',
+			'#theme'           => '',
 		);
 		$form['body'] = array(
 			'#type'        => 'textarea',
@@ -42,6 +42,7 @@ class editQuestionForm extends FormBase {
 		$form['multichoice'] = array(
 			'#type'  => 'checkbox',
 			'#title' => $this->t('Multichoice'),
+			//'#default_value' => 0,
 		);
 		$form['id'] = array(
 			'#type'        => 'textfield',
