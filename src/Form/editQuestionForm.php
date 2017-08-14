@@ -31,7 +31,7 @@ class editQuestionForm extends FormBase {
 			'#default_value'   => isset($config['photo'])?$config['photo']:'',
 			'#upload_location' => 'public://images/',
 			'#required'        => FALSE,
-			'#theme'           => '',
+			//'#theme'           => '',
 		);
 		$form['body'] = array(
 			'#type'        => 'textarea',
@@ -69,6 +69,7 @@ class editQuestionForm extends FormBase {
 	 * {@inheritdoc}
 	 */
 	public function submitForm(array&$form, FormStateInterface $form_state) {
+		$imgurl = null;
 		if ($image = $form_state->getValue('image')) {
 			$file = File::load($image[0]);
 			$file->setPermanent();

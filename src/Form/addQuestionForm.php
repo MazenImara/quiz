@@ -31,7 +31,7 @@ class addQuestionForm extends FormBase {
 			'#default_value'   => isset($config['photo'])?$config['photo']:'',
 			'#upload_location' => 'public://images/',
 			'#required'        => FALSE,
-			'#theme'           => '',
+			//'#theme'           => '',
 		);
 		$form['body'] = array(
 			'#type'        => 'textarea',

@@ -84,6 +84,7 @@ class quizMethods {
 	}
 
 	static public function getQuiz($id) {
+		$quiz = null;
 		$result = \Drupal::database()->select('quiz', 'q')
 		                             ->fields('q', ['id', 'title', 'body', 'image', 'showResult'])
 		                             ->condition('id', [$id])
@@ -103,7 +104,7 @@ class quizMethods {
 	static public function addQuestion($question, $imgurl) {
 
 		try {
-			\Drupal::database()->insert('question')
+			\Drupal::database()->insert('quiz_question')
 			                   ->fields([
 					'body',
 					'multichoice',
@@ -118,7 +119,7 @@ class quizMethods {
 				))
 			->execute();
 
-			$response = new RedirectResponse('question/'.self::getLast('question'));
+			$response = new RedirectResponse('question/'.self::getLast('quiz_question'));
 			$response->send();
 
 		} catch (\Exception $e) {
@@ -127,7 +128,7 @@ class quizMethods {
 	}
 
 	static public function getAllQuestions($quizId) {
-		$result = \Drupal::database()->select('question', 'q')
+		$result = \Drupal::database()->select('quiz_question', 'q')
 		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
 		                             ->condition('quizId', [$quizId])
 		                             ->execute();
@@ -145,7 +146,7 @@ class quizMethods {
 	}
 
 	static public function getQuestionById($id) {
-		$result = \Drupal::database()->select('question', 'q')
+		$result = \Drupal::database()->select('quiz_question', 'q')
 		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
 		                             ->condition('id', [$id])
 		                             ->execute();
@@ -163,7 +164,7 @@ class quizMethods {
 
 	static public function getNextQuestion($questionId, $quizId) {
 		$question = null;
-		$query = \Drupal::database()->select('question', 'q')
+		$query = \Drupal::database()->select('quiz_question', 'q')
 		                            ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
 		                            ->condition('quizId', [$quizId])
 		                            ->orderBy('id', 'DESC');
@@ -187,7 +188,7 @@ class quizMethods {
 	static public function addAnswer($answer) {
 
 		try {
-			\Drupal::database()->insert('answer')
+			\Drupal::database()->insert('quiz_answer')
 			                   ->fields([
 					'body',
 					'status',
@@ -208,7 +209,7 @@ class quizMethods {
 	}
 
 	static public function getAllAnswers($questionId) {
-		$result = \Drupal::database()->select('answer', 'a')
+		$result = \Drupal::database()->select('quiz_answer', 'a')
 		                             ->fields('a', ['id', 'body', 'status', 'questionId'])
 		                             ->condition('questionId', [$questionId])
 		                             ->execute();
@@ -224,7 +225,7 @@ class quizMethods {
 		return $answers;
 	}
 	static public function getAnswer($id) {
-		$result = \Drupal::database()->select('answer', 'a')
+		$result = \Drupal::database()->select('quiz_answer', 'a')
 		                             ->fields('a', ['id', 'body', 'status', 'questionId'])
 		                             ->condition('id', [$id])
 		                             ->execute();
@@ -242,14 +243,14 @@ class quizMethods {
 		if (self::getQuestionById($answer['questionId'])['multichoice']) {
 			# code...
 		} else {
-			\Drupal::database()->update('answer')
+			\Drupal::database()->update('quiz_answer')
 			                   ->condition('questionId', [$answer['questionId']])
 			                   ->fields([
 					'status' => 0,
 
 				])
 				->execute();
-			\Drupal::database()->update('answer')
+			\Drupal::database()->update('quiz_answer')
 			                   ->condition('id', [$answer['answerId']])
 			                   ->fields([
 					'status' => 1,
@@ -260,7 +261,7 @@ class quizMethods {
 	}
 
 	static public function getTrueAnswers($questionId) {
-		$result = \Drupal::database()->select('answer', 'a')
+		$result = \Drupal::database()->select('quiz_answer', 'a')
 		                             ->fields('a', ['status'])
 		                             ->condition('questionId', [$questionId])
 		                             ->condition('status', [1])
@@ -279,12 +280,12 @@ class quizMethods {
 			if (self::getAnswer($answer['answerId'])['status']) {
 
 				if (count(self::getTrueAnswers($answer['questionId'])) > 1) {
-					\Drupal::database()->update('answer')->condition('id', [$answer['answerId']])->fields(['status' => 0, ])->execute();
+					\Drupal::database()->update('quiz_answer')->condition('id', [$answer['answerId']])->fields(['status' => 0, ])->execute();
 				} else {
 					drupal_set_message('The question must have one true answer at least ');
 				}
 			} else {
-				\Drupal::database()->update('answer')
+				\Drupal::database()->update('quiz_answer')
 				                   ->condition('id', [$answer['answerId']])
 				                   ->fields(['status' => 1, ])
 					->execute();
@@ -296,7 +297,7 @@ class quizMethods {
 		if ($answer['status']) {
 			drupal_set_message('You can not delete it until you change it to false answer or make another true answer');
 		} else {
-			$query = \Drupal::database()->delete('answer', [])
+			$query = \Drupal::database()->delete('quiz_answer', [])
 			                            ->condition('id', [$answer['answerId']])
 			                            ->execute();
 		}
@@ -306,7 +307,7 @@ class quizMethods {
 		foreach (self::getAllAnswers($id) as $answer) {
 			self::deleteAnswer($answer['id']);
 		}
-		$query = \Drupal::database()->delete('question', [])
+		$query = \Drupal::database()->delete('quiz_question', [])
 		                            ->condition('id', [$id])
 		                            ->execute();
 	}
@@ -316,7 +317,7 @@ class quizMethods {
 			self::deleteQuestion($question['id']);
 		}
 
-		$query = \Drupal::database()->delete('user_quizes', [])
+		$query = \Drupal::database()->delete('quiz_user_quizzes', [])
 		                            ->condition('quizId', [$id])
 		                            ->execute();
 
@@ -327,7 +328,7 @@ class quizMethods {
 
 	static public function editQuestion($question, $imageUrl) {
 		if ($imageUrl) {
-			\Drupal::database()->update('question')
+			\Drupal::database()->update('quiz_question')
 			                   ->condition('id', [$question['id']])
 			                   ->fields([
 					'image' => $imageUrl,
@@ -335,7 +336,7 @@ class quizMethods {
 				->execute();
 		}
 		if ($question['multichoice']) {
-			\Drupal::database()->update('question')
+			\Drupal::database()->update('quiz_question')
 			                   ->condition('id', [$question['id']])
 			                   ->fields([
 					'body'        => $question['body'],
@@ -346,7 +347,7 @@ class quizMethods {
 			drupal_set_message('Changes saved successfully');
 		} else {
 			if (count(self::getTrueAnswers($question['id'])) == 1) {
-				\Drupal::database()->update('question')
+				\Drupal::database()->update('quiz_question')
 				                   ->condition('id', [$question['id']])
 				                   ->fields([
 						'body'        => $question['body'],
@@ -440,6 +441,7 @@ class quizMethods {
 	}
 
 	static public function getUserByEmail($email) {
+		$user = null;
 		$result = \Drupal::database()->select('quiz_user', 'u')
 		                             ->fields('u', ['id', 'name', 'email', 'password', 'status'])
 		                             ->condition('email', [$email])
@@ -458,7 +460,7 @@ class quizMethods {
 	}
 
 	static public function assignQuiz($assign) {
-		\Drupal::database()->insert('user_quizes')
+		\Drupal::database()->insert('quiz_user_quizzes')
 		                   ->fields([
 				'userId',
 				'quizId',
@@ -471,14 +473,14 @@ class quizMethods {
 	}
 
 	static public function unAssignQuiz($userQuiz) {
-		$query = \Drupal::database()->delete('user_quizes', [])
+		$query = \Drupal::database()->delete('quiz_user_quizzes', [])
 		                            ->condition('userId', [$userQuiz['userId']])
 		                            ->condition('quizId', [$userQuiz['quizId']])
 		                            ->execute();
 	}
 
 	static public function getUserQuizes($userId) {
-		$result = \Drupal::database()->select('user_quizes', 'u')
+		$result = \Drupal::database()->select('quiz_user_quizzes', 'u')
 		                             ->fields('u', ['quizId'])
 		                             ->condition('userId', [$userId])
 		                             ->execute();

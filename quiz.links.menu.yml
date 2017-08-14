@@ -5,7 +5,7 @@ quiz.quiz:
   url: internal:/quiz
 
 quiz.addQuiz:
-  title: 'Manage Quiz'
+  title: 'Manage Quizzes'
   description: 'to create and manage quiz'
   parent: quiz.quiz
   url: internal:/quiz
