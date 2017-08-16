@@ -5,7 +5,7 @@
 	<thead>
       <tr>
         <th>Name</th>
-        <th>Email</th>
+        <th>Uniq</th>
         <th>Password</th>
         <th>status</th>        
       </tr>
@@ -14,7 +14,7 @@
 		{% for user in content.users %}
 	      <tr>
 	        <td><a href="/quiz/user/{{user.id}}">{{user.name}}</a></td>
-	        <td>{{user.email}}</td>
+	        <td>{{user.uniq}}</td>
 	        <td>{{user.password}}</td>
 	        <td>{% if user.status %}Active{% else %}Unactive{% endif %} </td>
           <td>

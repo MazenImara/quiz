@@ -61,7 +61,7 @@ function quiz_mail($key, &$message, $params) {
   switch ($key) {
     case 'result':
       $message['from'] = \Drupal::config('system.site')->get('mail');
-      $message['subject'] = t('Your mail subject Here: @title', array('@title' => $params['title']), $options);
+      $message['subject'] = t('@title', array('@title' => $params['title']), $options);
       $message['body'][] = $params['message'];
       break;
   }

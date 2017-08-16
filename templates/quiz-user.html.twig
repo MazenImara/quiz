@@ -13,10 +13,10 @@
 	{{ content.editForm.subject }}
 	{{ content.editForm.message }}
 	<div class="form-item js-form-type-textfield form-type-textfield form-item-name form-no-label">
-	 <input data-drupal-selector="edit-name" type="text" id="edit-name" name="name" value="{{content.user.name}}" size="60" maxlength="128" placeholder="Name" class="form-text required" required="required" aria-required="true">
+	 	<input data-drupal-selector="edit-name" type="text" id="edit-name" name="name" value="{{content.user.name}}" size="60" maxlength="128" placeholder="Name" class="form-text required" required="required" aria-required="true">
 	</div>
-	<div class="form-item js-form-type-email form-type-email form-item-email form-no-label">
-	<input data-drupal-selector="edit-email" type="email" id="edit-email" name="email" value="{{content.user.email}}" size="60" maxlength="254" placeholder="Email" class="form-email required" required="required" aria-required="true">
+	<div class="form-item js-form-type-textfield form-type-textfield form-item-uniq form-no-label">
+		<input data-drupal-selector="edit-uniq" type="text" id="edit-uniq" name="uniq" value="{{content.user.uniq}}" size="60" maxlength="128" placeholder="Email or Uniq Name" class="form-text required" required="required" aria-required="true">
 	</div>
 	<div class="form-item js-form-type-textfield form-type-textfield form-item-password form-no-label">
 	<input data-drupal-selector="edit-password" type="text" id="edit-password" name="password" value="{{content.user.password}}" size="60" maxlength="128" placeholder="Lösenord" class="form-text required" required="required" aria-required="true">
@@ -107,6 +107,9 @@
 <table class="table table-hover">
     <thead>
       <tr>
+	    <th>Name</th>
+	    <th>Email</th>
+	    <th>Shop</th>
         <th>Quiz Title</th>
         <th>Score %</th>
         <th>Date</th>
@@ -116,6 +119,9 @@
 		{% for try in content.userTries %}
 			
 			<tr>
+				<td>{{try.try_name}}</td>
+				<td>{{try.try_email}}</td>
+				<td>{{try.try_shop}}</td>
 		        <td><a href="/quiz/result/{{try.id}}"> {{try.quizTitle}} </a></td>
 		        <td>{{try.score}}</td>
 		        <td>{{try.date}}</td>

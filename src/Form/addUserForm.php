@@ -28,24 +28,16 @@ class addUserForm extends FormBase {
 			'#placeholder' => t('Name'),
 			'#required'    => TRUE,
 		);
-		$form['email'] = [
-			'#type'        => 'email',
+		$form['uniq'] = [
+			'#type'        => 'textfield',
 			'#required'    => TRUE,
-			'#placeholder' => 'Email',
+			'#placeholder' => 'Email or Uniq Name',
 		];
 		$form['password'] = array(
 			'#type'        => 'textfield',
 			'#placeholder' => t('Password'),
 			'#required'    => TRUE,
 		);
-		/*
-		$form['pass_fields'] = array(
-		'#type'        => 'password_confirm',
-		'#description' => t('Enter the same password in both fields'),
-		'#size'        => 32,
-		'#required'    => TRUE,
-		);
-		 */
 		$form['status']['status'] = array(
 			'#type'  => 'radios',
 			'#title' => $this->t('status'),

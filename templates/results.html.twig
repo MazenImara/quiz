@@ -4,6 +4,8 @@
     <thead>
       <tr>
         <th>Name</th>
+        <th>Email</th>
+        <th>Shop</th>
         <th>Quiz Title</th>
         <th>Score %</th>
         <th>Date</th>
@@ -13,7 +15,9 @@
     {% for try in content.tries %}
       
       <tr>
-            <td><a href="/quiz/user/{{try.user.id}} ">{{try.user.name}}</a></td>
+            <td>{{try.try_name}}</td>
+            <td>{{try.try_email}}</td>
+            <td>{{try.try_shop}}</td>
             <td><a href="/quiz/result/{{try.id}}"> {{try.quizTitle}} </a></td>
             <td>{{try.score}}</td>
             <td>{{try.date}}</td>

@@ -1,4 +1,19 @@
 jQuery(document).ready(function($) {
+
+$("#addTryDetailsForm").submit(function(e) {
+	e.preventDefault();
+	$.post("/ajaxaddtrydetails",
+	    $("#addTryDetailsForm").serialize() ,
+	function(data, status){		    
+	});		
+	$.post("/ajaxquiz",
+	    $("#doQuizForm").serialize() ,
+	function(data, status){			
+		if (data.login == '0') {window.location.href = "/userquiz";}
+		else {nextQuestion(data);}	    
+	});		
+});
+
 $("#doQuizForm").submit(function(e) {
     e.preventDefault();
 	$.post("/ajaxquiz",
@@ -25,7 +40,7 @@ function nextQuestion(data) {
 		$("#question").html(img +'<h6>' + data.question.body +  '</h6>');
 		$("#answers").html(answers(data));
 		$("#questionId").val(data.question.id);
-		$("#start").hide();
+		$("#addTryDetailsForm").hide();
 		$("#next").show();		
 	}
 

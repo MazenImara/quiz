@@ -87,6 +87,15 @@ quiz.ajaxquiz:
   requirements:
     _permission: 'access content'
 
+quiz.ajaxAddTryDetails:
+  path: '/ajaxaddtrydetails'
+  defaults:
+    _title: 'Ajax Add Try Details'
+    _controller: '\Drupal\quiz\Controller\quizController::ajaxAddTryDetails'
+  methods:  [POST]
+  requirements:
+    _permission: 'access content'
+
 quiz.addquizform:
   path: '/addquizform'
   defaults:
@@ -231,7 +240,6 @@ quiz.loginForm:
     _form: '\Drupal\quiz\Form\loginForm'
   requirements:
     _permission: 'access content'
-
 
 quiz.sendMail:
   path: '/send'

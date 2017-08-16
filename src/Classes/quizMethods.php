@@ -362,27 +362,26 @@ class quizMethods {
 	}
 
 	static public function addUser($user) {
-
-		try {
+		if (self::getUserByUniq($user['uniq'])) {
+			drupal_set_message('The Email or uniq name is used choose an other', 'error');
+		} else {
 			\Drupal::database()->insert('quiz_user')
 			                   ->fields([
 					'name',
-					'email',
+					'uniq',
 					'password',
 					'status',
 				])
 			->values(array(
 					$user['name'],
-					$user['email'],
+					$user['uniq'],
 					$user['password'],
 					$user['status'],
 				))
 			->execute();
-
+			$response = new RedirectResponse('user/'.self::getLast('quiz_user'));
+			$response->send();
 			drupal_set_message('User added successfully');
-
-		} catch (\Exception $e) {
-			drupal_set_message('Error happen when adding user');
 		}
 	}
 
@@ -407,14 +406,14 @@ class quizMethods {
 	}
 	static public function getAllUsers() {
 		$result = \Drupal::database()->select('quiz_user', 'u')
-		                             ->fields('u', ['id', 'name', 'email', 'password', 'status'])
+		                             ->fields('u', ['id', 'name', 'uniq', 'password', 'status'])
 		                             ->execute();
 		$users = [];
 		while ($row = $result->fetchAssoc()) {
 			array_push($users, [
 					'id'       => $row['id'],
 					'name'     => $row['name'],
-					'email'    => $row['email'],
+					'uniq'     => $row['uniq'],
 					'password' => $row['password'],
 					'status'   => $row['status'],
 				]);
@@ -424,7 +423,7 @@ class quizMethods {
 
 	static public function getUser($id) {
 		$result = \Drupal::database()->select('quiz_user', 'u')
-		                             ->fields('u', ['id', 'name', 'email', 'password', 'status'])
+		                             ->fields('u', ['id', 'name', 'uniq', 'password', 'status'])
 		                             ->condition('id', [$id])
 		                             ->execute();
 
@@ -432,7 +431,7 @@ class quizMethods {
 			$user = [
 				'id'       => $row['id'],
 				'name'     => $row['name'],
-				'email'    => $row['email'],
+				'uniq'     => $row['uniq'],
 				'password' => $row['password'],
 				'status'   => $row['status'],
 			];
@@ -440,18 +439,18 @@ class quizMethods {
 		return $user;
 	}
 
-	static public function getUserByEmail($email) {
+	static public function getUserByUniq($uniq) {
 		$user   = null;
 		$result = \Drupal::database()->select('quiz_user', 'u')
-		                             ->fields('u', ['id', 'name', 'email', 'password', 'status'])
-		                             ->condition('email', [$email])
+		                             ->fields('u', ['id', 'name', 'uniq', 'password', 'status'])
+		                             ->condition('uniq', [$uniq])
 		                             ->execute();
 
 		while ($row = $result->fetchAssoc()) {
 			$user = [
 				'id'       => $row['id'],
 				'name'     => $row['name'],
-				'email'    => $row['email'],
+				'uniq'     => $row['uniq'],
 				'password' => $row['password'],
 				'status'   => $row['status'],
 			];
@@ -504,7 +503,7 @@ class quizMethods {
 			                   ->condition('id', [$user['id']])
 			                   ->fields([
 					'name'     => $user['name'],
-					'email'    => $user['email'],
+					'uniq'     => $user['uniq'],
 					'password' => $user['password'],
 					'status'   => $user['status'],
 
@@ -519,7 +518,7 @@ class quizMethods {
 	}
 
 	static public function login($login) {
-		if ($user = self::getUserByEmail($login['email'])) {
+		if ($user = self::getUserByUniq($login['uniq'])) {
 			if ($user['password'] == $login['password']) {
 				if ($user['status']) {
 					if (session_status() == PHP_SESSION_NONE) {
@@ -618,7 +617,23 @@ class quizMethods {
 			}
 		}
 	}
+	static public function deleteNullScoreTries() {
 
+		$result = \Drupal::database()->select('quiz_try', 'u')
+		                             ->fields('u', ['id'])
+		                             ->condition('score', [-1])
+		                             ->condition('date', [date("Y-m-d H:i:s", strtotime("-30 minutes"))], '<')
+		                             ->execute();
+		$ids = [];
+		while ($row = $result->fetchAssoc()) {
+			array_push($ids, [
+					'id' => $row['id'],
+				]);
+		}
+		foreach ($ids as $id) {
+			self::deleteTry($id);
+		}
+	}
 	static public function addUserAnswer($body, $resultId) {
 		\Drupal::database()->insert('quiz_user_answer')
 		                   ->fields(['body', 'resultId'])
@@ -746,7 +761,7 @@ class quizMethods {
 
 	static public function getTries($userId = null) {
 		$query = \Drupal::database()->select('quiz_try', 'q')
-		                            ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date'])
+		                            ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date', 'try_name', 'try_email', 'try_shop'])
 		                            ->orderBy('id', 'DESC');
 		if ($userId != null) {
 			$query->condition('userId', [$userId]);
@@ -762,6 +777,9 @@ class quizMethods {
 					'score'     => $row['score'],
 					'user'      => self::getUser($row['userId']),
 					'date'      => $row['date'],
+					'try_name'  => $row['try_name'],
+					'try_email' => $row['try_email'],
+					'try_shop'  => $row['try_shop'],
 				]);
 		}
 
@@ -770,7 +788,7 @@ class quizMethods {
 
 	static public function getTry($id) {
 		$result = \Drupal::database()->select('quiz_try', 'q')
-		                             ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date'])
+		                             ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date', 'try_name', 'try_email', 'try_shop'])
 		                             ->condition('id', [$id])
 		                             ->execute();
 
@@ -781,6 +799,9 @@ class quizMethods {
 				'score'     => $row['score'],
 				'user'      => self::getUser($row['userId']),
 				'date'      => $row['date'],
+				'try_name'  => $row['try_name'],
+				'try_email' => $row['try_email'],
+				'try_shop'  => $row['try_shop'],
 			];
 		}
 
@@ -819,7 +840,7 @@ class quizMethods {
 		drupal_set_message('Successfully deleted');
 	}
 
-	static public function sendResult($result, $quizId, $user) {
+	static public function sendResult($result, $quizId, $tryId) {
 		$quiz = self::getQuiz($quizId);
 		if ($quiz['send_email']) {
 
@@ -835,7 +856,7 @@ class quizMethods {
 			$mailManager       = \Drupal::service('plugin.manager.mail');
 			$module            = 'quiz';
 			$key               = 'result';
-			$to                = $user['email'];
+			$to                = self::getTry($tryId)['try_email'];
 			$params['message'] = $body;
 			$params['title']   = 'Your result for quiz: '.$quiz['title'].' : '.$result['tryScore'];
 			$langcode          = \Drupal::currentUser()->getPreferredLangcode();
@@ -853,6 +874,19 @@ class quizMethods {
 			drupal_set_message($message);
 			\Drupal::logger('mail-log')->notice($message);
 
+		}
+	}
+
+	static public function addTryDetails($details) {
+		if (isset($_SESSION['tryId'])) {
+			\Drupal::database()->update('quiz_try')
+			                   ->condition('id', [$_SESSION['tryId']])
+			                   ->fields([
+					'try_name'  => $details['try_name'],
+					'try_email' => $details['try_email'],
+					'try_shop'  => $details['try_shop'],
+				])
+				->execute();
 		}
 	}
 }

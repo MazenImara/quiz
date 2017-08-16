@@ -23,10 +23,10 @@ class loginForm extends FormBase {
 	 * {@inheritdoc}
 	 */
 	public function buildForm(array $form, FormStateInterface $form_state) {
-		$form['email'] = [
-			'#type'        => 'email',
+		$form['uniq'] = [
+			'#type'        => 'textfield',
 			'#required'    => TRUE,
-			'#placeholder' => 'Email',
+			'#placeholder' => 'Email or Uniq Name',
 
 		];
 

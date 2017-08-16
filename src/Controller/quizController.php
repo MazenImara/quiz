@@ -95,7 +95,11 @@ class quizController extends ControllerBase {
 		if (isset($_SESSION['login_user'])) {
 			$user = $_SESSION['login_user'];
 		}
-
+		$quizzes = quizMethods::getUserQuizes($user['id']);
+		if (isset($_SESSION['login_user']) && count($quizzes) < 2) {
+			$response = new RedirectResponse('/startquiz/'.$quizzes[0]['id']);
+			$response->send();
+		}
 		return array(
 			'#theme'    => 'user_quiz',
 			'#attached' => [
@@ -106,7 +110,7 @@ class quizController extends ControllerBase {
 			'#content'    => [
 				'loginForm'  => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\loginForm'),
 				'user'       => $user,
-				'userQuizes' => quizMethods::getUserQuizes($user['id']),
+				'userQuizes' => $quizzes,
 			],
 		);
 	}
@@ -138,7 +142,7 @@ class quizController extends ControllerBase {
 	}
 
 	public function results() {
-
+		quizMethods::deleteNullScoreTries();
 		return array(
 			'#theme'    => 'results',
 			'#attached' => [
@@ -203,11 +207,21 @@ class quizController extends ControllerBase {
 				return new JsonResponse($questionWithAnswer);
 			} else {
 				$result = quizMethods::getResult($_SESSION['tryId']);
-				quizMethods::sendResult($result, $_POST['quizId'], $_SESSION['login_user']);
+				quizMethods::sendResult($result, $_POST['quizId'], $_SESSION['tryId']);
 				return new JsonResponse($result);
 			}
 
 		}
+	}
+
+	public function ajaxAddTryDetails() {
+		$details = [
+			'try_name'  => $_POST['try_name'],
+			'try_email' => $_POST['try_email'],
+			'try_shop'  => $_POST['try_shop'],
+		];
+
+		quizMethods::addTryDetails($details);
 	}
 
 }

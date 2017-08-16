@@ -28,10 +28,10 @@ class editUserForm extends FormBase {
 			'#placeholder' => t('Name'),
 			'#required'    => TRUE,
 		);
-		$form['email'] = [
-			'#type'        => 'email',
+		$form['uniq'] = [
+			'#type'        => 'textfield',
 			'#required'    => TRUE,
-			'#placeholder' => 'Email',
+			'#placeholder' => 'Email or Uniq Name',
 		];
 		$form['password'] = array(
 			'#type'        => 'textfield',

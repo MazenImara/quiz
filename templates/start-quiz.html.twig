@@ -12,12 +12,19 @@
 	<input type="text" name="userId" value="{{content.user.id}}" required="true" style="display:none;">
 	<input type="text" id="questionId" name="questionId" value="0" required="true" style="display:none;">
 	<input type="text" name="quizId" value="{{content.quiz.id}}" required="true" style="display:none;">
-	<input type="submit" id="start" value="Start" >
+	
 	<input type="submit" id="next" value="Next"   style="display:none;">
 </form>
 <input type="text" id="showResult" value=" {{content.quiz.showResult}} " style="display:none;">
 
+<form id="addTryDetailsForm">
+	<input type="text" name="try_name" required="true" placeholder="Name">
+	<input type="email" name="try_email" required="true" placeholder="Email">
+	<input type="text" name="try_shop" required="true" placeholder="Your shop name">
+	<input type="submit" value="Start">
+</form>
 
+<a href="/userquiz/logout">Logout</a>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
