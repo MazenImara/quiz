@@ -49,6 +49,22 @@ class editQuizForm extends FormBase {
 			'#placeholder' => t('id'),
 			'#required'    => TRUE,
 		);
+		$form['seccess'] = array(
+			'#type'          => 'textfield',
+			'#placeholder'   => t('Seccess %'),
+			'#required'      => TRUE,
+			'#default_value' => '86',
+		);
+		$form['send_email'] = array(
+			'#type'  => 'checkbox',
+			'#title' => $this->t('Send result by email'),
+			//'#default_value' => 0,
+		);
+		$form['show_result'] = array(
+			'#type'  => 'checkbox',
+			'#title' => $this->t('Show result after quiz'),
+			//'#default_value' => 0,
+		);
 		$form['actions']['#type']  = 'actions';
 		$form['actions']['submit'] = array(
 			'#type'        => 'submit',

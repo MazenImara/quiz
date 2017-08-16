@@ -12,11 +12,17 @@ class quizMethods {
 					'title',
 					'body',
 					'image',
+					'showResult',
+					'seccess',
+					'send_email',
 				])
 			->values(array(
 					$quiz['title'],
 					$quiz['body'],
 					$imgurl,
+					$quiz['show_result'],
+					$quiz['seccess'],
+					$quiz['send_email'],
 				))
 			->execute();
 			$response = new RedirectResponse('quiz/'.self::getLast('quiz'));
@@ -30,8 +36,11 @@ class quizMethods {
 		\Drupal::database()->update('quiz')
 		                   ->condition('id', [$quiz['id']])
 		                   ->fields([
-				'title' => $quiz['title'],
-				'body'  => $quiz['body'],
+				'title'      => $quiz['title'],
+				'body'       => $quiz['body'],
+				'showResult' => $quiz['show_result'],
+				'seccess'    => $quiz['seccess'],
+				'send_email' => $quiz['send_email'],
 			])
 			->execute();
 		if ($imageUrl) {
@@ -40,19 +49,6 @@ class quizMethods {
 			                   ->fields([
 					'image' => $imageUrl,
 				])
-				->execute();
-		}
-	}
-	static public function changeShowResult($quiz) {
-		if (self::getQuiz($quiz['id'])['showResult']) {
-			\Drupal::database()->update('quiz')
-			                   ->condition('id', [$quiz['id']])
-			                   ->fields(['showResult' => 0, ])
-				->execute();
-		} else {
-			\Drupal::database()->update('quiz')
-			                   ->condition('id', [$quiz['id']])
-			                   ->fields(['showResult' => 1, ])
 				->execute();
 		}
 	}
@@ -68,7 +64,7 @@ class quizMethods {
 	}
 	static public function getAllQuizes() {
 		$query = \Drupal::database()->select('quiz', 'q');
-		$query->fields('q', ['id', 'title', 'body', 'image', 'showResult']);
+		$query->fields('q', ['id', 'title', 'body', 'image', 'showResult', 'seccess', 'send_email']);
 		$result = $query->execute();
 		$quizes = [];
 		while ($row = $result->fetchAssoc()) {
@@ -78,15 +74,17 @@ class quizMethods {
 					'body'       => $row['body'],
 					'image'      => $row['image'],
 					'showResult' => $row['showResult'],
+					'seccess'    => $row['seccess'],
+					'send_email' => $row['send_email'],
 				]);
 		}
 		return $quizes;
 	}
 
 	static public function getQuiz($id) {
-		$quiz = null;
+		$quiz   = null;
 		$result = \Drupal::database()->select('quiz', 'q')
-		                             ->fields('q', ['id', 'title', 'body', 'image', 'showResult'])
+		                             ->fields('q', ['id', 'title', 'body', 'image', 'showResult', 'seccess', 'send_email'])
 		                             ->condition('id', [$id])
 		                             ->execute();
 		while ($row = $result->fetchAssoc()) {
@@ -96,6 +94,8 @@ class quizMethods {
 				'body'       => $row['body'],
 				'image'      => $row['image'],
 				'showResult' => $row['showResult'],
+				'seccess'    => $row['seccess'],
+				'send_email' => $row['send_email'],
 			];
 		}
 		return $quiz;
@@ -164,7 +164,7 @@ class quizMethods {
 
 	static public function getNextQuestion($questionId, $quizId) {
 		$question = null;
-		$query = \Drupal::database()->select('quiz_question', 'q')
+		$query    = \Drupal::database()->select('quiz_question', 'q')
 		                            ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
 		                            ->condition('quizId', [$quizId])
 		                            ->orderBy('id', 'DESC');
@@ -441,7 +441,7 @@ class quizMethods {
 	}
 
 	static public function getUserByEmail($email) {
-		$user = null;
+		$user   = null;
 		$result = \Drupal::database()->select('quiz_user', 'u')
 		                             ->fields('u', ['id', 'name', 'email', 'password', 'status'])
 		                             ->condition('email', [$email])
@@ -523,7 +523,7 @@ class quizMethods {
 			if ($user['password'] == $login['password']) {
 				if ($user['status']) {
 					if (session_status() == PHP_SESSION_NONE) {
-					    session_start();
+						session_start();
 					}
 					$_SESSION['login_user'] = $user;
 					$_SESSION['timeout']    = time()+(30*60);
@@ -817,5 +817,42 @@ class quizMethods {
 		                            ->condition('id', [$try['id']])
 		                            ->execute();
 		drupal_set_message('Successfully deleted');
+	}
+
+	static public function sendResult($result, $quizId, $user) {
+		$quiz = self::getQuiz($quizId);
+		if ($quiz['send_email']) {
+
+			$body = 'The score is : '.$result['tryScore'].'\n your answers are: \n';
+			foreach ($result as $row) {
+				$body = $body+$row['question']+' \n answer : \n';
+				foreach ($row['userAnswers'] as $answer) {
+					$body = $body+$answer['body']+'\n';
+				}
+				$body = $body+'score: '+$row['score']+'\n';
+			}
+
+			$mailManager       = \Drupal::service('plugin.manager.mail');
+			$module            = 'quiz';
+			$key               = 'result';
+			$to                = $user['email'];
+			$params['message'] = $body;
+			$params['title']   = 'Your result for quiz: '.$quiz['title'].' : '.$result['tryScore'];
+			$langcode          = \Drupal::currentUser()->getPreferredLangcode();
+			$send              = true;
+
+			$result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+			if ($result['result'] !== true) {
+				$message = t('There was a problem sending your email notification to @email.', array('@email' => $to));
+				drupal_set_message($message, 'error');
+				\Drupal::logger('mail-log')->error($message);
+				return;
+			}
+
+			$message = t('An email notification has been sent to @email ', array('@email' => $to));
+			drupal_set_message($message);
+			\Drupal::logger('mail-log')->notice($message);
+
+		}
 	}
 }

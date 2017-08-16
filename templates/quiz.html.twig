@@ -2,23 +2,6 @@
 
 <a href="/quiz">< Main</a><br><br>
 
-<form {{content.showResultForm.attributes }} method="post">
-	{{ content.showResultForm.form_build_id }}
-	{{ content.showResultForm.form_token }}
-	{{ content.showResultForm.form_id }}
-	{{ content.showResultForm.subject }}
-	{{ content.showResultForm.message }}
-	<input data-drupal-selector="edit-id" type="text" id="edit-id" name="id" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="quizId" class="form-text required" required="required" aria-required="true" style="display:none;">
-	
-	{{ content.showResultForm.actions.submit }}
-</form>
-{% if content.quiz.showResult %}
-The result is visible to user 
-{% else %}
-The result is hidden to user
-{% endif %}
-
-
 
 {% if content.quiz.image %}
 	<br><img src="{{content.quiz.image}}"  height="420" width="420">
@@ -30,9 +13,27 @@ The result is hidden to user
 	{{ content.editQuizForm.form_id }}
 	{{ content.editQuizForm.subject }}
 	{{ content.editQuizForm.message }}
-	{{ content.editQuizForm.image }}
+	{{ content.editQuizForm.image }}	
 	<input data-drupal-selector="edit-title" type="text" id="edit-title" name="title" value="{{content.quiz.title}}" size="60" maxlength="128" placeholder="Title" class="form-text required" required="required" aria-required="true">
 	<textarea data-drupal-selector="edit-body" id="edit-body--2" name="body" rows="5" cols="60" placeholder="Quiz Description" class="form-textarea required" required="required" aria-required="true">{{content.quiz.body}}</textarea>
+	<input data-drupal-selector="edit-seccess" type="text" id="edit-seccess" name="seccess" value="{{content.quiz.seccess}}" size="60" maxlength="128" placeholder="Seccess %" class="form-text required" required="required" aria-required="true">
+	<div class="form-item js-form-type-checkbox form-type-checkbox form-item-send-email">
+		{% if content.quiz.send_email %}
+			<input data-drupal-selector="edit-send-email" type="checkbox" id="edit-send-email" name="send_email" value="1" class="form-checkbox" checked>
+		{% else %}
+			<input data-drupal-selector="edit-send-email" type="checkbox" id="edit-send-email" name="send_email" value="1" class="form-checkbox" >
+		{% endif %}		
+		
+		<label for="edit-send-email" class="option">Send result by email</label>
+	</div>
+	<div class="form-item js-form-type-checkbox form-type-checkbox form-item-show-result">
+		{% if content.quiz.showResult %}
+			<input data-drupal-selector="edit-show-result" type="checkbox" id="edit-show-result" name="show_result" value="1" class="form-checkbox" checked>
+		{% else %}
+			<input data-drupal-selector="edit-show-result" type="checkbox" id="edit-show-result" name="show_result" value="1" class="form-checkbox" >
+		{% endif %}		
+		<label for="edit-show-result" class="option">Show result after quiz</label>
+	</div>		
 	<input data-drupal-selector="edit-id" type="text" id="edit-id--2" name="id" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="id" class="form-text required" required="required" aria-required="true" style="display:none;">
 	{{ content.editQuizForm.actions.submit }}
 </form>

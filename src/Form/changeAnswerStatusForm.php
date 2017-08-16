@@ -33,7 +33,7 @@ class changeAnswerStatusForm extends FormBase {
 			'#type' => 'radios',
 			//'#title' => $this->t('status'),
 			//'#default_value' => 1,
-			'#options'  => array(0 => $this->t('False'), 1 => $this->t('True')),
+			'#options'  => NULL,
 			'#required' => TRUE,
 		);
 		$form['actions']['#type']  = 'actions';

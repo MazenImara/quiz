@@ -1,52 +1,52 @@
 <?php
 function quiz_theme($existing, $type, $theme, $path) {
-	return array(	  	
-	  			'main' => array(
-	            				'variables' => array(	                		
+	return [	  	
+	  			'main' => [
+	            				'variables' => [	                		
 	                								'content' => 'from hook module',
-	            								),
-	              			),
-	  			'quiz' => array(
-	            				'variables' => array(	                		
+	            								],
+	              			],
+	  			'quiz' => [
+	            				'variables' => [	                		
 	                								'content' => 'from hook module',
-	            								),
-	              			),
-	  			'question' => array(
-	            				'variables' => array(	                		
+	            								],
+	              			],
+	  			'question' => [
+	            				'variables' => [	                		
 	                								'content' => 'from hook module',
-	            								),
-	              			),	
-	  			'quiz_users' => array(
-	            				'variables' => array(	                		
+	            								],
+	              			],	
+	  			'quiz_users' => [
+	            				'variables' => [	                		
 	                								'content' => 'from hook module',
-	            								),
-	              			),	
-	  			'quiz_user' => array(
-	            				'variables' => array(	                		
+	            								],
+	              			],	
+	  			'quiz_user' => [
+	            				'variables' => [	                		
 	                								'content' => 'from hook module',
-	            								),
-	              			),	              			              				
-	  			'user_quiz' => array(
-	            				'variables' => array(	                		
+	            								],
+	              			],	              			              				
+	  			'user_quiz' => [
+	            				'variables' => [	                		
 	                								'content' => 'from hook module',
-	            								),
-	              			),
-	  			'start_quiz' => array(
-	            				'variables' => array(	                		
+	            								],
+	              			],
+	  			'start_quiz' => [
+	            				'variables' => [	                		
 	                								'content' => 'from hook module',
-	            								),
-	              			),	              					              			
-	  			'results' => array(
-	            				'variables' => array(	                		
+	            								],
+	              			],	              					              			
+	  			'results' => [
+	            				'variables' => [	                		
 	                								'content' => 'from hook module',
-	            								),
-	              			),	
-	  			'result' => array(
-	            				'variables' => array(	                		
+	            								],
+	              			],	
+	  			'result' => [
+	            				'variables' => [	                		
 	                								'content' => 'from hook module',
-	            								),
-	              			),		              				              			              				  	
-    		);
+	            								],
+	              			],		              				              			              				  	
+    		];
 }
 use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\Component\Utility\SafeMarkup;
@@ -59,7 +59,7 @@ function quiz_mail($key, &$message, $params) {
     'langcode' => $message['langcode'],
   );
   switch ($key) {
-    case 'test':
+    case 'result':
       $message['from'] = \Drupal::config('system.site')->get('mail');
       $message['subject'] = t('Your mail subject Here: @title', array('@title' => $params['title']), $options);
       $message['body'][] = $params['message'];

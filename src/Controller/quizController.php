@@ -29,14 +29,13 @@ class quizController extends ControllerBase {
 	}
 	public function quiz($id) {
 		return array(
-			'#theme'          => 'quiz',
-			'#content'        => [
-				'quiz'           => quizMethods::getQuiz($id),
-				'form'           => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addQuestionForm'),
-				'deleteForm'     => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteQuestionForm'),
-				'questions'      => quizMethods::getAllQuestions($id),
-				'showResultForm' => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\changeShowResultForm'),
-				'editQuizForm'   => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editQuizForm'),
+			'#theme'        => 'quiz',
+			'#content'      => [
+				'quiz'         => quizMethods::getQuiz($id),
+				'form'         => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addQuestionForm'),
+				'deleteForm'   => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteQuestionForm'),
+				'questions'    => quizMethods::getAllQuestions($id),
+				'editQuizForm' => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editQuizForm'),
 			],
 		);
 	}
@@ -96,7 +95,7 @@ class quizController extends ControllerBase {
 		if (isset($_SESSION['login_user'])) {
 			$user = $_SESSION['login_user'];
 		}
-		
+
 		return array(
 			'#theme'    => 'user_quiz',
 			'#attached' => [
@@ -118,9 +117,9 @@ class quizController extends ControllerBase {
 		if (!isset($_SESSION['login_user'])) {
 			$response = new RedirectResponse('/userquiz');
 			$response->send();
-		}else {
-			$user = $_SESSION['login_user'];
-			$quiz = quizMethods::getQuiz($id);
+		} else {
+			$user              = $_SESSION['login_user'];
+			$quiz              = quizMethods::getQuiz($id);
 			$_SESSION['tryId'] = quizMethods::addTry($user['id'], $quiz['title']);
 		}
 
@@ -178,9 +177,9 @@ class quizController extends ControllerBase {
 		$response = new RedirectResponse('/userquiz');
 		$response->send();
 		return [
-	      '#type' => 'markup',
-	      '#markup' => $this->t('Hello, World!'),
-    	];
+			'#type'   => 'markup',
+			'#markup' => $this->t('Hello, World!'),
+		];
 	}
 
 	public function ajaxQuiz() {
@@ -204,6 +203,7 @@ class quizController extends ControllerBase {
 				return new JsonResponse($questionWithAnswer);
 			} else {
 				$result = quizMethods::getResult($_SESSION['tryId']);
+				quizMethods::sendResult($result, $_POST['quizId'], $_SESSION['login_user']);
 				return new JsonResponse($result);
 			}
 
