@@ -746,14 +746,15 @@ class quizMethods {
 		}
 		return $answers;
 	}
-	static public function addTry($userId, $quizTitle) {
+	static public function addTry($userId, $quizTitle, $seccess) {
 		$date = date("Y-m-d H:i:s");
 		\Drupal::database()->insert('quiz_try')
-		                   ->fields(['quizTitle', 'userId', 'date'])
+		                   ->fields(['quizTitle', 'userId', 'date', 'seccess'])
 		                   ->values([
 				$quizTitle,
 				$userId,
 				date("Y-m-d H:i:s"),
+				$seccess,
 			])
 		->execute();
 		return self::getLast('quiz_try');
@@ -761,7 +762,7 @@ class quizMethods {
 
 	static public function getTries($userId = null) {
 		$query = \Drupal::database()->select('quiz_try', 'q')
-		                            ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date', 'try_name', 'try_email', 'try_shop'])
+		                            ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date', 'try_name', 'try_email', 'try_shop', 'seccess'])
 		                            ->orderBy('id', 'DESC');
 		if ($userId != null) {
 			$query->condition('userId', [$userId]);
@@ -780,6 +781,7 @@ class quizMethods {
 					'try_name'  => $row['try_name'],
 					'try_email' => $row['try_email'],
 					'try_shop'  => $row['try_shop'],
+					'seccess'   => $row['seccess'],
 				]);
 		}
 
@@ -788,7 +790,7 @@ class quizMethods {
 
 	static public function getTry($id) {
 		$result = \Drupal::database()->select('quiz_try', 'q')
-		                             ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date', 'try_name', 'try_email', 'try_shop'])
+		                             ->fields('q', ['id', 'quizTitle', 'score', 'userId', 'date', 'try_name', 'try_email', 'try_shop', 'seccess'])
 		                             ->condition('id', [$id])
 		                             ->execute();
 
@@ -802,6 +804,7 @@ class quizMethods {
 				'try_name'  => $row['try_name'],
 				'try_email' => $row['try_email'],
 				'try_shop'  => $row['try_shop'],
+				'seccess'   => $row['seccess'],
 			];
 		}
 

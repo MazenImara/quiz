@@ -124,7 +124,7 @@ class quizController extends ControllerBase {
 		} else {
 			$user              = $_SESSION['login_user'];
 			$quiz              = quizMethods::getQuiz($id);
-			$_SESSION['tryId'] = quizMethods::addTry($user['id'], $quiz['title']);
+			$_SESSION['tryId'] = quizMethods::addTry($user['id'], $quiz['title'], $quiz['seccess']);
 		}
 
 		return array(

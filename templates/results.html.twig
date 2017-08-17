@@ -13,27 +13,31 @@
     </thead>
     <tbody>
     {% for try in content.tries %}
-      
-      <tr>
-            <td>{{try.try_name}}</td>
-            <td>{{try.try_email}}</td>
-            <td>{{try.try_shop}}</td>
-            <td><a href="/quiz/result/{{try.id}}"> {{try.quizTitle}} </a></td>
-            <td>{{try.score}}</td>
-            <td>{{try.date}}</td>
-            <td>
-                <form {{content.delTryForm.attributes }} method="post">
-                    {{ content.delTryForm.form_build_id }}
-                    {{ content.delTryForm.form_token }}
-                    {{ content.delTryForm.form_id }}
-                    {{ content.delTryForm.subject }}
-                    {{ content.delTryForm.message }}
-                    <input data-drupal-selector="edit-id" type="text" id="edit-id" name="id" value="{{try.id}}" size="60" maxlength="128" placeholder="tryId" class="form-text required" required="required" aria-required="true" style="display:none;">
-                    {{ content.delTryForm.actions.submit }}
-                </form>
-            </td>
-        </tr>
-
+        {% if try.score %}
+          <tr>
+                <td>{{try.try_name}}</td>
+                <td>{{try.try_email}}</td>
+                <td>{{try.try_shop}}</td>
+                <td><a href="/quiz/result/{{try.id}}"> {{try.quizTitle}} </a></td>
+                {% if try.score > try.seccess %}
+                    <td style="color:green">{{try.score}}</td>
+                {% else %}
+                    <td style="color:red">{{try.score}}</td>
+                {% endif %}                
+                <td>{{try.date}}</td>
+                <td>
+                    <form {{content.delTryForm.attributes }} method="post">
+                        {{ content.delTryForm.form_build_id }}
+                        {{ content.delTryForm.form_token }}
+                        {{ content.delTryForm.form_id }}
+                        {{ content.delTryForm.subject }}
+                        {{ content.delTryForm.message }}
+                        <input data-drupal-selector="edit-id" type="text" id="edit-id" name="id" value="{{try.id}}" size="60" maxlength="128" placeholder="tryId" class="form-text required" required="required" aria-required="true" style="display:none;">
+                        {{ content.delTryForm.actions.submit }}
+                    </form>
+                </td>
+            </tr>
+        {% endif %}
     {% endfor %}
 
     </tbody>

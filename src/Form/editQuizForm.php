@@ -91,7 +91,6 @@ class editQuizForm extends FormBase {
 			$file->setPermanent();
 			$file->save();
 			$imgurl = file_create_url($file->getFileUri());
-			drupal_set_message($imgurl);
 		}
 		quizMethods::editQuiz($form_state->getValues(), $imgurl);
 	}

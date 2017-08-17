@@ -86,7 +86,6 @@ class addQuizForm extends FormBase {
 			$file->setPermanent();
 			$file->save();
 			$imgurl = file_create_url($file->getFileUri());
-			drupal_set_message($imgurl);
 		}
 		quizMethods::addQuiz($form_state->getValues(), $imgurl);
 	}
