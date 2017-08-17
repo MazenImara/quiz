@@ -222,6 +222,7 @@ class quizController extends ControllerBase {
 		];
 
 		quizMethods::addTryDetails($details);
+		return new JsonResponse([]);
 	}
 
 }

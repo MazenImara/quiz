@@ -16,7 +16,7 @@
 	        <td><a href="/quiz/user/{{user.id}}">{{user.name}}</a></td>
 	        <td>{{user.uniq}}</td>
 	        <td>{{user.password}}</td>
-	        <td>{% if user.status %}Active{% else %}Unactive{% endif %} </td>
+	        <td>{% if user.status %}Active{% else %}Inactive{% endif %} </td>
           <td>
                 <form {{content.deleteUserForm.attributes }} method="post">
                     {{ content.deleteUserForm.form_build_id }}

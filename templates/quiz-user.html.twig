@@ -1,9 +1,9 @@
 
 {% if content.user.status == 1 %}
 	{% set active = 'checked' %}
-	{% set unactive = '' %}
+	{% set inactive = '' %}
 {% else %}
-	{% set unactive = 'checked' %}
+	{% set inactive = 'checked' %}
 	{% set active = '' %}
 {% endif %}
 <form {{content.editForm.attributes }} method="post">
@@ -32,8 +32,8 @@
 	<label for="edit-status-1" class="option">Active</label>
 	</div>
 	<div class="form-item js-form-type-radio form-type-radio form-item-status">
-	<input data-drupal-selector="edit-status-0" type="radio" id="edit-status-0" name="status" value="0" class="form-radio" {{unactive}} >
-	<label for="edit-status-0" class="option">Unactive</label>
+	<input data-drupal-selector="edit-status-0" type="radio" id="edit-status-0" name="status" value="0" class="form-radio" {{inactive}} >
+	<label for="edit-status-0" class="option">Inactive</label>
 	</div>
 	</fieldset>
 	<div class="form-item js-form-type-textfield form-type-textfield form-item-id form-no-label">

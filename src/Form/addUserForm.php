@@ -42,7 +42,7 @@ class addUserForm extends FormBase {
 			'#type'  => 'radios',
 			'#title' => $this->t('status'),
 			//'#default_value' => 1,
-			'#options'  => array(1 => $this->t('Active'), 0 => $this->t('Unactive')),
+			'#options'  => array(1 => $this->t('Active'), 0 => $this->t('Inactive')),
 			'#required' => TRUE,
 		);
 		$form['actions']['#type']  = 'actions';
