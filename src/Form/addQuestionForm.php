@@ -23,7 +23,7 @@ class addQuestionForm extends FormBase {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function buildForm(array $form, FormStateInterface $form_state) {
+	public function buildForm(array $form, FormStateInterface $form_state, $quizId = null) {
 		$form['image'] = array(
 			'#title' => t('Question Image'),
 			'#type'  => 'managed_file',
@@ -43,10 +43,14 @@ class addQuestionForm extends FormBase {
 			'#type'  => 'checkbox',
 			'#title' => $this->t('Multichoice'),
 		);
+		$form['text_choice'] = array(
+			'#type'  => 'checkbox',
+			'#title' => $this->t('Text choice'),
+		);		
 		$form['quizId'] = array(
-			'#type'        => 'textfield',
+			'#type'        => 'hidden',
 			'#placeholder' => t('quizId'),
-			'#required'    => TRUE,
+			'#value'    => $quizId,
 		);
 		$form['actions']['#type']  = 'actions';
 		$form['actions']['submit'] = array(

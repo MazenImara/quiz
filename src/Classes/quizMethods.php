@@ -2,6 +2,7 @@
 
 namespace Drupal\quiz\Classes;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use  \Drupal\user\Entity\User;
 
 class quizMethods {
 
@@ -108,12 +109,14 @@ class quizMethods {
 			                   ->fields([
 					'body',
 					'multichoice',
+					'text_choice',
 					'quizId',
 					'image',
 				])
 			->values(array(
 					$question['body'],
 					$question['multichoice'],
+					$question['text_choice'],
 					$question['quizId'],
 					$imgurl,
 				))
@@ -123,13 +126,57 @@ class quizMethods {
 			$response->send();
 
 		} catch (\Exception $e) {
-			drupal_set_message('Error happen when adding Question');
+			drupal_set_message('Error happen when adding Question: '.$question['quizId']);
 		}
 	}
 
+	static public function addTextField($textField) {
+			\Drupal::database()->insert('quiz_answer_text_field')
+			                   ->fields([
+					'questionId',
+					'title',
+				])
+			->values(array(
+					$textField['questionId'],
+					$textField['title'],
+				))
+			->execute();
+	}
+	static public function getTextFields($questionId) {
+		$result = \Drupal::database()->select('quiz_answer_text_field', 'q')
+		                             ->fields('q', ['id', 'questionId', 'title'])
+		                             ->condition('questionId', [$questionId])
+		                             ->execute();
+		$textFields = [];
+		while ($row = $result->fetchAssoc()) {
+			array_push($textFields, [
+					'id'          => $row['id'],
+					'questionId'        => $row['questionId'],
+					'title' => $row['title'],
+				]);
+		}
+		return $textFields;
+	}
+
+	static public function getTextFieldById($id) {
+		$textField = null;
+		$result = \Drupal::database()->select('quiz_answer_text_field', 'q')
+		                             ->fields('q', ['id', 'questionId', 'title'])
+		                             ->condition('id', $id)
+		                             ->execute();
+		
+		while ($row = $result->fetchAssoc()) {
+			$textField =  [
+					'id'          => $row['id'],
+					'questionId'        => $row['questionId'],
+					'title' => $row['title'],
+				];
+		}
+		return $textField;
+	}
 	static public function getAllQuestions($quizId) {
 		$result = \Drupal::database()->select('quiz_question', 'q')
-		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
+		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image','showAgreement'])
 		                             ->condition('quizId', [$quizId])
 		                             ->execute();
 		$questions = [];
@@ -140,6 +187,7 @@ class quizMethods {
 					'multichoice' => $row['multichoice'],
 					'quizId'      => $row['quizId'],
 					'image'       => $row['image'],
+					'showAgreement' => $row['showAgreement'],
 				]);
 		}
 		return $questions;
@@ -147,7 +195,7 @@ class quizMethods {
 
 	static public function getQuestionById($id) {
 		$result = \Drupal::database()->select('quiz_question', 'q')
-		                             ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
+		                             ->fields('q', ['id', 'body', 'multichoice','text_choice', 'quizId', 'image','showAgreement'])
 		                             ->condition('id', [$id])
 		                             ->execute();
 		while ($row = $result->fetchAssoc()) {
@@ -155,8 +203,10 @@ class quizMethods {
 				'id'          => $row['id'],
 				'body'        => $row['body'],
 				'multichoice' => $row['multichoice'],
+				'textChoice' => $row['text_choice'],
 				'quizId'      => $row['quizId'],
 				'image'       => $row['image'],
+				'showAgreement' => $row['showAgreement'],
 			];
 		}
 		return $question;
@@ -165,7 +215,7 @@ class quizMethods {
 	static public function getNextQuestion($questionId, $quizId) {
 		$question = null;
 		$query    = \Drupal::database()->select('quiz_question', 'q')
-		                            ->fields('q', ['id', 'body', 'multichoice', 'quizId', 'image'])
+		                            ->fields('q', ['id', 'body', 'multichoice', 'text_choice', 'quizId', 'image','showAgreement'])
 		                            ->condition('quizId', [$quizId])
 		                            ->orderBy('id', 'DESC');
 
@@ -178,8 +228,10 @@ class quizMethods {
 				'id'          => $row['id'],
 				'body'        => $row['body'],
 				'multichoice' => $row['multichoice'],
+				'textChoice' => $row['text_choice'],
 				'quizId'      => $row['quizId'],
 				'image'       => $row['image'],
+				'showAgreement' => $row['showAgreement'],
 			];
 		}
 		return $question;
@@ -303,10 +355,21 @@ class quizMethods {
 		}
 	}
 
+	static public function deleteTextField($id) {
+		$query = \Drupal::database()->delete('quiz_answer_text_field', [])
+			                        ->condition('id', $id)
+			                        ->execute();
+	}
+
 	static public function deleteQuestion($id) {
 		foreach (self::getAllAnswers($id) as $answer) {
 			self::deleteAnswer($answer['id']);
 		}
+
+		$query = \Drupal::database()->delete('quiz_answer_text_field', [])
+			                        ->condition('questionId', $id)
+			                        ->execute();
+
 		$query = \Drupal::database()->delete('quiz_question', [])
 		                            ->condition('id', [$id])
 		                            ->execute();
@@ -341,17 +404,31 @@ class quizMethods {
 			                   ->fields([
 					'body'        => $question['body'],
 					'multichoice' => $question['multichoice'],
+					'showAgreement' => $question['showAgreement'],
 
 				])
 				->execute();
 			drupal_set_message('Changes saved successfully');
-		} else {
+		}
+		elseif ($question['textChoice']) {
+			\Drupal::database()->update('quiz_question')
+			                   ->condition('id', [$question['id']])
+			                   ->fields([
+					'body'        => $question['body'],
+					'multichoice' => $question['multichoice'],
+					'showAgreement' => $question['showAgreement'],
+
+				])
+				->execute();
+		}
+		else {
 			if (count(self::getTrueAnswers($question['id'])) == 1) {
 				\Drupal::database()->update('quiz_question')
 				                   ->condition('id', [$question['id']])
 				                   ->fields([
 						'body'        => $question['body'],
 						'multichoice' => $question['multichoice'],
+						'showAgreement' => $question['showAgreement'],
 
 					])
 					->execute();
@@ -526,7 +603,7 @@ class quizMethods {
 					}
 					$_SESSION['login_user'] = $user;
 					$_SESSION['timeout']    = time()+(30*60);
-					$response               = new RedirectResponse('/userquiz');
+					$response               = new RedirectResponse('/webkurs');
 					$response->send();
 					drupal_set_message('login successfully');
 				} else {
@@ -616,6 +693,40 @@ class quizMethods {
 				self::addUserAnswer($answer, $resultId);
 			}
 		}
+		elseif ($question['textChoice']) {
+			\Drupal::database()->insert('quiz_result')
+			            	->fields([
+						'tryId',
+						'quizTitle',
+						'question',
+						'score',
+
+					])
+				->values([
+						$tryId,
+						self::getQuiz($quizId)['title'],
+						$question['body'],
+						-1,
+					])
+				->execute();
+			$resultId = self::getLast('quiz_result');
+			foreach ($answer as $key => $value) {
+				$title = self::getTextFieldById($key)['title'];
+			
+				\Drupal::database()->insert('quiz_user_text_answer')
+				                   ->fields([
+						'resultId',
+						'title',
+						'value',
+					])
+				->values([
+						$resultId,
+						$title,
+						$value,
+					])
+				->execute();
+			}			
+		}
 	}
 	static public function deleteNullScoreTries() {
 
@@ -686,8 +797,14 @@ class quizMethods {
 		                             ->execute();
 		$quiz_result = ['more' => '0', 'tryScore' => 0, ];
 		while ($row = $result->fetchAssoc()) {
-			$tryScore = $tryScore+(double) $row['score'];
-			$questionNum++;
+			if ((double)$row['score'] > -1) {				
+				$tryScore = $tryScore + (double) $row['score'];
+				$questionNum++;
+				$userAnswers = self::getResultUserAnswers($row['id']);
+			}
+			else{
+				$userAnswers = self::getResultUserTextAnswers($row['id']);
+			}
 			array_push($quiz_result, [
 					'id'    => $row['id'],
 					'tryId' => $row['tryId'],
@@ -696,7 +813,7 @@ class quizMethods {
 					'question'       => $row['question'],
 					'score'          => $row['score'],
 					'correctAnswers' => self::getResultCorrectAnswers($row['id']),
-					'userAnswers'    => self::getResultUserAnswers($row['id']),
+					'userAnswers'    => $userAnswers ,
 				]);
 		}
 		if ($questionNum > 0) {
@@ -746,6 +863,21 @@ class quizMethods {
 		}
 		return $answers;
 	}
+	static public function getResultUserTextAnswers($resultId) {
+		$result = \Drupal::database()->select('quiz_user_text_answer', 'u')
+		                             ->fields('u', ['id', 'resultId', 'title', 'value'])
+		                             ->condition('resultId', [$resultId])
+		                             ->execute();
+		$answers = [];
+		while ($row = $result->fetchAssoc()) {
+			array_push($answers, [
+					'id'       => $row['id'],
+					'resultId' => $row['resultId'],
+					'body'     => $row['title'] ." : ".$row['value'],
+				]);
+		}
+		return $answers;
+	}	
 	static public function addTry($userId, $quizTitle, $seccess) {
 		$date = date("Y-m-d H:i:s");
 		\Drupal::database()->insert('quiz_try')
@@ -828,6 +960,10 @@ class quizMethods {
 			                            ->condition('resultId', [$result['id']])
 			                            ->execute();
 
+			$query = \Drupal::database()->delete('quiz_user_text_answer', [])
+			                            ->condition('resultId', [$result['id']])
+			                            ->execute();
+
 			$query = \Drupal::database()->delete('quiz_correct_answer', [])
 			                            ->condition('resultId', [$result['id']])
 			                            ->execute();
@@ -844,38 +980,19 @@ class quizMethods {
 	}
 
 	static public function sendResult($result, $quizId, $tryId) {
-		$quiz = self::getQuiz($quizId);
-		if ($quiz['send_email']) {
+		
+			self::sendMail($to, 'test for user', 'this is test');
 
-			$body = 'The score is : '.$result['tryScore'].'\n your answers are: \n';
-			foreach ($result as $row) {
-				$body = $body+$row['question']+' \n answer : \n';
-				foreach ($row['userAnswers'] as $answer) {
-					$body = $body+$answer['body']+'\n';
-				}
-				$body = $body+'score: '+$row['score']+'\n';
+			$ids = \Drupal::entityQuery('user')
+			->condition('status', 1)
+			->condition('roles', 'webkurs_admin')
+			->execute();
+			$users = User::loadMultiple($ids);
+
+			foreach ($users as $user) {
+				$to = $user->get('mail')->value;
+				self::sendMail($to, 'test for admin', 'this is test');
 			}
-
-			$mailManager       = \Drupal::service('plugin.manager.mail');
-			$module            = 'quiz';
-			$key               = 'result';
-			$to                = self::getTry($tryId)['try_email'];
-			$params['message'] = $body;
-			$params['title']   = 'Your result for quiz: '.$quiz['title'].' : '.$result['tryScore'];
-			$langcode          = \Drupal::currentUser()->getPreferredLangcode();
-			$send              = true;
-
-			$result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
-			if ($result['result'] !== true) {
-				$message = t('There was a problem sending your email notification to @email.', array('@email' => $to));
-				drupal_set_message($message, 'error');
-				\Drupal::logger('mail-log')->error($message);
-				return;
-			}
-
-			$message = t('An email notification has been sent to @email ', array('@email' => $to));
-			drupal_set_message($message);
-			\Drupal::logger('mail-log')->notice($message);
 
 		}
 	}
@@ -892,4 +1009,24 @@ class quizMethods {
 				->execute();
 		}
 	}
-}
+	static public function sendMail($to, $title , $body)
+	{
+
+		$mailManager = \Drupal::service('plugin.manager.mail');
+		$module = 'quiz';
+		$key = 'quiz';
+		$to = $to;
+		$params['message'] = $body;
+		$params['title'] = $title;
+		$langcode = \Drupal::currentUser()->getPreferredLangcode();
+		$send = true;
+		$result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+		if ($result['result'] !== true) {
+		  drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+		}
+		else {
+		  drupal_set_message(t('Your message has been sent.'));
+		}
+	
+	}
+} 

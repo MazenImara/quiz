@@ -4,42 +4,35 @@ namespace Drupal\quiz\Form;
 
 /**
  * @file
- * Contains \Drupal\quiz\Form\addAnswerForm.
+ * Contains \Drupal\quiz\Form\addQuestionForm.
  */
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\file\Entity\File;
 use \Drupal\quiz\Classes\quizMethods;
 
-class addAnswerForm extends FormBase {
+class addTextFieldForm extends FormBase {
 	/**
 	 * {@inheritdoc}
 	 */
 	public function getFormId() {
-		return 'addAnswer';
+		return 'addTextFieldForm';
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function buildForm(array $form, FormStateInterface $form_state) {
-		$form['body'] = array(
-			'#type'        => 'textarea',
-			'#placeholder' => t('Answer.'),
-			'#required'    => TRUE,
-			'#resizable'   => TRUE,
-		);
-		$form['status']['status'] = array(
-			'#type'  => 'radios',
-			'#title' => $this->t('status'),
-			//'#default_value' => 1,
-			'#options'  => array(0 => $this->t('False'), 1 => $this->t('True')),
-			'#required' => TRUE,
-		);
+	public function buildForm(array $form, FormStateInterface $form_state, $questionId = null) {
 		$form['questionId'] = array(
-			'#type'        => 'textfield',
+			'#type'        => 'hidden',
 			'#placeholder' => t('questionId'),
-			'#required'    => TRUE,
+			'#value'    => $questionId,
+		);
+		$form['title'] = array(
+			'#type'        => 'textfield',
+			'#placeholder' => t('Title'),
+			'#required'    => True,
 		);
 		$form['actions']['#type']  = 'actions';
 		$form['actions']['submit'] = array(
@@ -62,7 +55,8 @@ class addAnswerForm extends FormBase {
 	 */
 	public function submitForm(array&$form, FormStateInterface $form_state) {
 
-		quizMethods::addAnswer($form_state->getValues());
+		quizMethods::addTextField($form_state->getValues());
+
 	}
 
 }

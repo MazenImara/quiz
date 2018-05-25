@@ -26,7 +26,7 @@ class loginForm extends FormBase {
 		$form['uniq'] = [
 			'#type'        => 'textfield',
 			'#required'    => TRUE,
-			'#placeholder' => 'Email or Uniq Name',
+			'#placeholder' => $this->t('Email or Unique Name'),
 
 		];
 

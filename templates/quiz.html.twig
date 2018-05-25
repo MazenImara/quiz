@@ -1,6 +1,6 @@
 
 
-<a href="/quiz">< Main</a><br><br>
+<a href="/quiz">< {{'Main'|trans}}</a><br><br>
 
 
 {% if content.quiz.image %}
@@ -14,9 +14,10 @@
 	{{ content.editQuizForm.subject }}
 	{{ content.editQuizForm.message }}
 	{{ content.editQuizForm.image }}	
-	<input data-drupal-selector="edit-title" type="text" id="edit-title" name="title" value="{{content.quiz.title}}" size="60" maxlength="128" placeholder="Title" class="form-text required" required="required" aria-required="true">
-	<textarea data-drupal-selector="edit-body" id="edit-body--2" name="body" rows="5" cols="60" placeholder="Quiz Description" class="form-textarea required" required="required" aria-required="true">{{content.quiz.body}}</textarea>
-	<input data-drupal-selector="edit-seccess" type="text" id="edit-seccess" name="seccess" value="{{content.quiz.seccess}}" size="60" maxlength="128" placeholder="Seccess %" class="form-text required" required="required" aria-required="true">
+	<input data-drupal-selector="edit-title" type="text" id="edit-title" name="title" value="{{content.quiz.title}}" size="60" maxlength="128" placeholder="{{ 'Title'|trans }}" class="form-text required" required="required" aria-required="true">
+	<textarea data-drupal-selector="edit-body" id="edit-body--2" name="body" rows="5" cols="60" placeholder="{{'Quiz Description'|trans}}" class="form-textarea required" required="required" aria-required="true">{{content.quiz.body}}</textarea>
+	<input data-drupal-selector="edit-seccess" type="text" id="edit-seccess" name="seccess" value="{{content.quiz.seccess}}" size="60" maxlength="128" placeholder="{{ 'Success'|trans }} %" class="form-text required" required="required" aria-required="true">
+
 	<div class="form-item js-form-type-checkbox form-type-checkbox form-item-send-email">
 		{% if content.quiz.send_email %}
 			<input data-drupal-selector="edit-send-email" type="checkbox" id="edit-send-email" name="send_email" value="1" class="form-checkbox" checked>
@@ -24,15 +25,16 @@
 			<input data-drupal-selector="edit-send-email" type="checkbox" id="edit-send-email" name="send_email" value="1" class="form-checkbox" >
 		{% endif %}		
 		
-		<label for="edit-send-email" class="option">Send result by email</label>
+		<label for="edit-send-email" class="option">{{ 'Send result by email'|trans }}</label>
 	</div>
+
 	<div class="form-item js-form-type-checkbox form-type-checkbox form-item-show-result">
 		{% if content.quiz.showResult %}
 			<input data-drupal-selector="edit-show-result" type="checkbox" id="edit-show-result" name="show_result" value="1" class="form-checkbox" checked>
 		{% else %}
 			<input data-drupal-selector="edit-show-result" type="checkbox" id="edit-show-result" name="show_result" value="1" class="form-checkbox" >
 		{% endif %}		
-		<label for="edit-show-result" class="option">Show result after quiz</label>
+		<label for="edit-show-result" class="option">{{ 'Show result after quiz'|trans }}</label>
 	</div>		
 	<input data-drupal-selector="edit-id" type="text" id="edit-id--2" name="id" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="id" class="form-text required" required="required" aria-required="true" style="display:none;">
 	{{ content.editQuizForm.actions.submit }}
@@ -41,7 +43,7 @@
 
 
  <br>
-<h5>Questions:</h5>
+<h5>{{ 'Questions'|trans }}:</h5>
 {% set i = 1 %}
 {% for question in content.questions %}
     {{i}}: <a href="question/{{question.id}}"> {{question.body}} </a>
@@ -60,16 +62,5 @@
 
 
 
-<h5>Add question</h5>
-<form {{content.form.attributes }}class="addquestion" data-drupal-selector="addquestion" enctype="multipart/form-data" action="/quiz/7" method="post" id="addquestion" accept-charset="UTF-8">
-	{{ content.form.form_build_id }}
-	{{ content.form.form_token }}
-	{{ content.form.form_id }}
-	{{ content.form.subject }}
-	{{ content.form.message }}
-	{{ content.form.image }}
-	{{ content.form.body }}
-	{{ content.form.multichoice }}
-	<input data-drupal-selector="edit-quizid" type="text" id="edit-quizid" name="quizId" value="{{content.quiz.id}}" size="60" maxlength="128" placeholder="quizId" class="form-text required hidden" required="required" aria-required="true" style="display:none;">
-	{{ content.form.actions.submit }}
-</form>
+<h5>{{ 'Add question'|trans }}</h5>
+{{content.form}}

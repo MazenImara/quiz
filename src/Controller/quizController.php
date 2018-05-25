@@ -18,12 +18,14 @@ class quizController extends ControllerBase {
 	public function main() {
 		$form       = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addQuizForm');
 		$deleteForm = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteQuizForm');
+		$agreementLinkForm =  \Drupal::formBuilder()->getForm('Drupal\quiz\Form\agreementLinkForm');
 		return array(
 			'#theme'      => 'main',
 			'#content'    => [
 				'form'       => $form,
 				'deleteForm' => $deleteForm,
 				'quizes'     => quizMethods::getAllQuizes(),
+				'agreementLinkForm' => $agreementLinkForm,
 			],
 		);
 	}
@@ -32,7 +34,7 @@ class quizController extends ControllerBase {
 			'#theme'        => 'quiz',
 			'#content'      => [
 				'quiz'         => quizMethods::getQuiz($id),
-				'form'         => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addQuestionForm'),
+				'form'         => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addQuestionForm', $id),
 				'deleteForm'   => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteQuestionForm'),
 				'questions'    => quizMethods::getAllQuestions($id),
 				'editQuizForm' => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editQuizForm'),
@@ -43,9 +45,11 @@ class quizController extends ControllerBase {
 	public function question($id) {
 		$form                  = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addAnswerForm');
 		$deleteForm            = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteAnswerForm');
-		$editForm              = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editQuestionForm');
+		$editForm              = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\editQuestionForm', $id);
 		$answerStatusForm      = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\changeAnswerStatusForm');
 		$answerStatusMultiForm = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\changeAnswerStatusMultiForm');
+		$addFieldForm = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addTextFieldForm', $id);
+		$deleteTextFieldForm = \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteTextFieldForm');
 		return array(
 			'#theme'                 => 'question',
 			'#content'               => [
@@ -56,6 +60,9 @@ class quizController extends ControllerBase {
 				'answers'               => quizMethods::getAllAnswers($id),
 				'answerStatusForm'      => $answerStatusForm,
 				'answerStatusMultiForm' => $answerStatusMultiForm,
+				'addFieldForm' => $addFieldForm,
+				'textFields' => quizMethods::getTextFields($id),
+				'deleteTextFieldForm' => $deleteTextFieldForm,
 			],
 		);
 	}
@@ -67,7 +74,6 @@ class quizController extends ControllerBase {
 				'users'          => quizMethods::getAllUsers(),
 				'form'           => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\addUserForm'),
 				'deleteUserForm' => \Drupal::formBuilder()->getForm('Drupal\quiz\Form\deleteUserForm'),
-
 			],
 		);
 	}
@@ -119,7 +125,7 @@ class quizController extends ControllerBase {
 		quizMethods::timeout();
 		$user = null;
 		if (!isset($_SESSION['login_user'])) {
-			$response = new RedirectResponse('/userquiz');
+			$response = new RedirectResponse('/webkurs');
 			$response->send();
 		} else {
 			$user              = $_SESSION['login_user'];
@@ -137,6 +143,8 @@ class quizController extends ControllerBase {
 			'#content' => [
 				'user'    => $user,
 				'quiz'    => $quiz,
+				'lang'    => \Drupal::languageManager()->getCurrentLanguage()->getId(),
+				'agreementLink' => \Drupal::config('quiz.settings')->get('agreement_link'),
 			],
 		);
 	}
@@ -178,7 +186,7 @@ class quizController extends ControllerBase {
 			unset($_SESSION['login_user']);
 			unset($_SESSION['timeout']);
 		}
-		$response = new RedirectResponse('/userquiz');
+		$response = new RedirectResponse('/webkurs');
 		$response->send();
 		return [
 			'#type'   => 'markup',
@@ -199,13 +207,20 @@ class quizController extends ControllerBase {
 				quizMethods::result($_SESSION['tryId'], $_POST['quizId'], $_POST['questionId'], $userAnswer);
 			}
 			if ($nextQuestion = quizMethods::getNextQuestion($_POST['questionId'], $_POST['quizId'])) {
+				if ($nextQuestion['textChoice']) {
+					$answers = quizMethods::getTextFields($nextQuestion['id']);
+				}
+				else{					
+					$answers = quizMethods::getAllAnswers($nextQuestion['id']);
+				}
 				$questionWithAnswer = [
 					'question' => $nextQuestion,
-					'answers'  => quizMethods::getAllAnswers($nextQuestion['id']),
+					'answers'  => $answers,
 				];
 
 				return new JsonResponse($questionWithAnswer);
 			} else {
+				
 				$result = quizMethods::getResult($_SESSION['tryId']);
 				quizMethods::sendResult($result, $_POST['quizId'], $_SESSION['tryId']);
 				return new JsonResponse($result);

@@ -1,0 +1,19 @@
+manage quizzes:
+  title: 'Add, edit and delete quizzes.'
+  description: 'Create, modify and delete the actual quizzes.'
+  restrict access: TRUE
+
+manage quiz users:
+  title: 'Add, edit and delete quiz users.'
+  description: 'Create, modify and delete the users for quizzes. Also assigning users to quizzes.'
+  restrict access: TRUE
+
+manage quiz results:
+  title: 'View and delete quiz results.'
+  description: 'View and delete all quiz results.'
+  restrict access: TRUE
+
+take quiz:
+  title: 'Take a quiz.'
+  description: 'Log in to an already quiz user (not a Drupal user) and take a quiz.'
+  restrict access: FALSE

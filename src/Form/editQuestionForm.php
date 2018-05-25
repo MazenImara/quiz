@@ -23,7 +23,8 @@ class editQuestionForm extends FormBase {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function buildForm(array $form, FormStateInterface $form_state) {
+	public function buildForm(array $form, FormStateInterface $form_state, $id = null) {
+		$question = quizMethods::getQuestionById($id);
 		$form['image'] = array(
 			'#title' => t('Question Image'),
 			'#type'  => 'managed_file',
@@ -38,16 +39,29 @@ class editQuestionForm extends FormBase {
 			'#placeholder' => t('Question?'),
 			'#required'    => TRUE,
 			'#resizable'   => TRUE,
+			'#default_value' => $question['body'],
 		);
 		$form['multichoice'] = array(
-			'#type'  => 'checkbox',
+			'#type'  => (!$question['textChoice']) ? 'checkbox' : 'hidden',
 			'#title' => $this->t('Multichoice'),
-			//'#default_value' => 0,
+			'#default_value' => $question['multichoice'],
+		);
+		$form['showAgreement'] = array(
+			'#type'  => ($question['textChoice']) ? 'checkbox' : 'hidden',
+			'#title' => $this->t('Show agreement'),
+			'#default_value' => $question['showAgreement'],
+		);
+
+		$form['textChoice'] = array(
+			'#type'  => 'hidden',
+			'#title' => $this->t('Show agreement'),
+			'#value' => $question['textChoice'],
 		);
 		$form['id'] = array(
-			'#type'        => 'textfield',
+			'#type'        => 'hidden',
 			'#placeholder' => t('id'),
 			'#required'    => TRUE,
+			'#value' => $question['id'],
 		);
 		$form['actions']['#type']  = 'actions';
 		$form['actions']['submit'] = array(

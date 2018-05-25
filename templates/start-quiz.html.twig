@@ -4,31 +4,34 @@
 	<div id='question'>
 		{% if content.quiz.image %}
 			<img src="{{content.quiz.image}}"  height="420" width="420">
-		{% endif %}	
-		<h5>{{content.quiz.title}}</h5>
+		{% endif %}
+		<h5 class="title title__quiz">{{content.quiz.title}}</h5>
 		<p>{{content.quiz.body}}</p>
 	</div>
 	<div id='answers'></div>
 	<input type="text" name="userId" value="{{content.user.id}}" required="true" style="display:none;">
 	<input type="text" id="questionId" name="questionId" value="0" required="true" style="display:none;">
 	<input type="text" name="quizId" value="{{content.quiz.id}}" required="true" style="display:none;">
-	
-	<input type="submit" id="next" value="Next"   style="display:none;">
+
+	<input type="submit" id="next" value="{{'Next'|trans}}"   style="display:none;">
 </form>
 <input type="text" id="showResult" value=" {{content.quiz.showResult}} " style="display:none;">
 
 <form id="addTryDetailsForm">
-	<input type="text" name="try_name" required="true" placeholder="Name">
-	<input type="email" name="try_email" required="true" placeholder="Email">
-	<input type="text" name="try_shop" required="true" placeholder="Your shop name">
-	<input type="submit" value="Start">
+	<input type="text" name="try_name" required="true" placeholder="{{'Name'|trans}}">
+	<input type="email" name="try_email" required="true" placeholder="{{'Email'|trans}}">
+	<input type="text" name="try_shop" required="true" placeholder="{{'Shop'|trans}}">
+	<input type="checkbox" required> {{'I agree that my data will be saved'|trans}} <a href="{{content.agreementLink}}" target="_blank">{{'Read more about our GDPR policy'|trans}}</a> <br>
+	<input type="submit" value="{{'Start'|trans}}">
 </form>
 
-<a href="/userquiz/logout">Logout</a>
+<a class="logout" href="/userquiz/logout">{{'Logout'|trans}}</a>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+	var lang = '{{content.lang}}';
+	var agreementLink = '{{content.agreementLink}}';
+</script>
+
 
 
 

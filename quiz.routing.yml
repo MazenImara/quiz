@@ -2,25 +2,25 @@ quiz.main:
   path: '/quiz'
   defaults:
     _controller: '\Drupal\quiz\Controller\quizController::main'
-    _title: 'quiz'
+    _title: 'Quiz'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
 
 quiz.quiz:
   path: '/quiz/{id}'
   defaults:
     _controller: '\Drupal\quiz\Controller\quizController::quiz'
-    _title: 'quiz'
+    _title: 'Quiz'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
 
 quiz.question:
   path: '/quiz/question/{id}'
   defaults:
     _controller: '\Drupal\quiz\Controller\quizController::question'
-    _title: 'question'
+    _title: 'Question'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
 
 quiz.QuizUsers:
   path: '/quiz/users'
@@ -28,7 +28,7 @@ quiz.QuizUsers:
     _title: 'Quiz users'
     _controller: '\Drupal\quiz\Controller\quizController::quizUsers'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quiz users'
 
 quiz.QuizUser:
   path: '/quiz/user/{id}'
@@ -36,7 +36,7 @@ quiz.QuizUser:
     _title: 'Quiz user'
     _controller: '\Drupal\quiz\Controller\quizController::quizUser'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quiz users'
 
 quiz.results:
   path: '/quiz/results'
@@ -44,7 +44,7 @@ quiz.results:
     _title: 'Quiz Results'
     _controller: '\Drupal\quiz\Controller\quizController::results'
   requirements:
-    _role: 'authenticated'  
+    _permission: 'manage quiz results'
 
 quiz.result:
   path: '/quiz/result/{tryId}'
@@ -52,15 +52,15 @@ quiz.result:
     _title: 'Quiz Result'
     _controller: '\Drupal\quiz\Controller\quizController::result'
   requirements:
-    _role: 'authenticated'       
+    _permission: 'manage quiz results'
 
 quiz.userQuiz:
-  path: '/userquiz'
+  path: '/test_webkurs'
   defaults:
-    _title: 'User Quiz'
+    _title: 'Start Quiz'
     _controller: '\Drupal\quiz\Controller\quizController::userQuiz'
   requirements:
-    _permission: 'access content'
+    _access: 'TRUE'
 
 quiz.startQuiz:
   path: '/startquiz/{id}'
@@ -68,7 +68,7 @@ quiz.startQuiz:
     _title: 'Start Quiz'
     _controller: '\Drupal\quiz\Controller\quizController::startQuiz'
   requirements:
-    _permission: 'access content'    
+    _access: 'TRUE'
 
 quiz.logout:
   path: '/userquiz/logout'
@@ -76,7 +76,7 @@ quiz.logout:
     _title: 'Logout'
     _controller: '\Drupal\quiz\Controller\quizController::logout'
   requirements:
-    _permission: 'access content'
+    _access: 'TRUE'
 
 quiz.ajaxquiz:
   path: '/ajaxquiz'
@@ -85,7 +85,7 @@ quiz.ajaxquiz:
     _controller: '\Drupal\quiz\Controller\quizController::ajaxQuiz'
   methods:  [POST]
   requirements:
-    _permission: 'access content'
+    _permission: 'take quiz'
 
 quiz.ajaxAddTryDetails:
   path: '/ajaxaddtrydetails'
@@ -94,7 +94,7 @@ quiz.ajaxAddTryDetails:
     _controller: '\Drupal\quiz\Controller\quizController::ajaxAddTryDetails'
   methods:  [POST]
   requirements:
-    _permission: 'access content'
+    _permission: 'take quiz'
 
 quiz.addquizform:
   path: '/addquizform'
@@ -102,7 +102,7 @@ quiz.addquizform:
     _title: 'Add Quiz'
     _form: '\Drupal\quiz\Form\addQuizForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
 
 quiz.editquizform:
   path: '/editquizform'
@@ -110,7 +110,7 @@ quiz.editquizform:
     _title: 'Edit Quiz'
     _form: '\Drupal\quiz\Form\editQuizForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
 
 quiz.addQuestionForm:
   path: '/addquestionform'
@@ -118,7 +118,15 @@ quiz.addQuestionForm:
     _title: 'Add Question'
     _form: '\Drupal\quiz\Form\addQuestionForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
+
+quiz.addTextFieldForm:
+  path: '/addtextfieldform'
+  defaults:
+    _title: 'Add TextField'
+    _form: '\Drupal\quiz\Form\addTextFieldForm'
+  requirements:
+    _permission: 'manage quizzes'
 
 quiz.addAnswerForm:
   path: '/addanswerform'
@@ -126,7 +134,7 @@ quiz.addAnswerForm:
     _title: 'Add Answer'
     _form: '\Drupal\quiz\Form\addAnswerForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
 
 quiz.deleteAnswerForm:
   path: '/deleteanswerform'
@@ -134,7 +142,7 @@ quiz.deleteAnswerForm:
     _title: 'Delete Answer'
     _form: '\Drupal\quiz\Form\deleteAnswerForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
 
 quiz.changeAnswerStatusForm:
   path: '/changeanswerstatusform'
@@ -142,7 +150,7 @@ quiz.changeAnswerStatusForm:
     _title: 'Cahnge Answer Status'
     _form: '\Drupal\quiz\Form\changeAnswerStatusForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
 
 quiz.ChangeAnswerStatusMultiForm:
   path: '/changeanswerstatusmultiform'
@@ -150,7 +158,7 @@ quiz.ChangeAnswerStatusMultiForm:
     _title: 'Change Answer Status Multi'
     _form: '\Drupal\quiz\Form\changeAnswerStatusMultiForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
 
 quiz.changeShowResultForm:
   path: '/changeshowresultform'
@@ -158,7 +166,7 @@ quiz.changeShowResultForm:
     _title: 'Cahnge Show Result'
     _form: '\Drupal\quiz\Form\changeShowResultForm'
   requirements:
-    _role: 'authenticated'    
+    _permission: 'manage quizzes'
 
 quiz.deleteQuestionForm:
   path: '/deletequestionform'
@@ -166,7 +174,7 @@ quiz.deleteQuestionForm:
     _title: 'Delete Question'
     _form: '\Drupal\quiz\Form\deleteQuestionForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
 
 quiz.deleteQuizForm:
   path: '/deletequizform'
@@ -174,7 +182,7 @@ quiz.deleteQuizForm:
     _title: 'Delete Quiz'
     _form: '\Drupal\quiz\Form\deleteQuizForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
 
 quiz.editQuestionForm:
   path: '/editquestionform/{id}'
@@ -182,7 +190,7 @@ quiz.editQuestionForm:
     _title: 'Edit Quiz'
     _form: '\Drupal\quiz\Form\editQuestionForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quizzes'
 
 quiz.addUserForm:
   path: '/adduser'
@@ -190,7 +198,7 @@ quiz.addUserForm:
     _title: 'Add User'
     _form: '\Drupal\quiz\Form\addUserForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quiz users'
 
 quiz.deleteUserForm:
   path: '/deleteuserform'
@@ -198,7 +206,7 @@ quiz.deleteUserForm:
     _title: 'Delete User'
     _form: '\Drupal\quiz\Form\deleteUserForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quiz users'
 
 quiz.assignQuizForm:
   path: '/assignquiz'
@@ -206,7 +214,7 @@ quiz.assignQuizForm:
     _title: 'Assign Quiz'
     _form: '\Drupal\quiz\Form\assignQuizForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quiz users'
 
 quiz.unassignQuizForm:
   path: '/unassignquiz'
@@ -214,8 +222,7 @@ quiz.unassignQuizForm:
     _title: 'UnAssign Quiz'
     _form: '\Drupal\quiz\Form\unAssignQuizForm'
   requirements:
-    _role: 'authenticated'
-
+    _permission: 'manage quiz users'
 
 quiz.editUserForm:
   path: '/edituserform'
@@ -223,7 +230,7 @@ quiz.editUserForm:
     _title: 'Edit User'
     _form: '\Drupal\quiz\Form\editUserForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quiz users'
 
 quiz.deleteTryForm:
   path: '/deletetryform'
@@ -231,7 +238,7 @@ quiz.deleteTryForm:
     _title: 'Delete Try'
     _form: '\Drupal\quiz\Form\deleteTryForm'
   requirements:
-    _role: 'authenticated'
+    _permission: 'manage quiz results'
 
 quiz.loginForm:
   path: '/loginform'
@@ -239,12 +246,12 @@ quiz.loginForm:
     _title: 'Login'
     _form: '\Drupal\quiz\Form\loginForm'
   requirements:
-    _permission: 'access content'
+    _access: 'TRUE'
 
-quiz.sendMail:
-  path: '/send'
+quiz.agreementLinkForm:
+  path: '/agreementForm'
   defaults:
-    _title: 'Send Mail'
-    _form: '\Drupal\quiz\Form\sendMail'
+    _title: ''
+    _form: '\Drupal\quiz\Form\agreementLinkForm'
   requirements:
-    _role: 'authenticated'
+    _access: 'TRUE'

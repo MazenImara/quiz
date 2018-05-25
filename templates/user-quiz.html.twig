@@ -2,9 +2,13 @@
 	{{content.loginForm}}
 
 {% else %}
-	<h3> choose quiz </h3><a href="/userquiz/logout">Logout</a><br>
+	<h5> {{'Choose'|trans}} quiz </h5>
+	<a href="/userquiz/logout">{{'Logout'|trans}}</a><br>
 	{% for quiz in content.userQuizes %}
 		<a href="/startquiz/{{quiz.id}}"> {{quiz.title}} </a><br>
 	{% endfor %}
 {% endif %}
 
+
+{#
+<h3 style="text-align: center;">{{'Webbkursen är under uppdatering. Välkommen åter!'|trans}}</h3>#}

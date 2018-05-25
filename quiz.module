@@ -1,70 +1,68 @@
 <?php
 function quiz_theme($existing, $type, $theme, $path) {
 	return [	  	
-	  			'main' => [
-	            				'variables' => [	                		
-	                								'content' => 'from hook module',
-	            								],
-	              			],
-	  			'quiz' => [
-	            				'variables' => [	                		
-	                								'content' => 'from hook module',
-	            								],
-	              			],
-	  			'question' => [
-	            				'variables' => [	                		
-	                								'content' => 'from hook module',
-	            								],
-	              			],	
-	  			'quiz_users' => [
-	            				'variables' => [	                		
-	                								'content' => 'from hook module',
-	            								],
-	              			],	
-	  			'quiz_user' => [
-	            				'variables' => [	                		
-	                								'content' => 'from hook module',
-	            								],
-	              			],	              			              				
-	  			'user_quiz' => [
-	            				'variables' => [	                		
-	                								'content' => 'from hook module',
-	            								],
-	              			],
-	  			'start_quiz' => [
-	            				'variables' => [	                		
-	                								'content' => 'from hook module',
-	            								],
-	              			],	              					              			
-	  			'results' => [
-	            				'variables' => [	                		
-	                								'content' => 'from hook module',
-	            								],
-	              			],	
-	  			'result' => [
-	            				'variables' => [	                		
-	                								'content' => 'from hook module',
-	            								],
-	              			],		              				              			              				  	
-    		];
+		'main' => [
+			'variables' => [	                		
+				'content' => 'from hook module',
+			],
+		],
+		'quiz' => [
+			'variables' => [	                		
+				'content' => 'from hook module',
+			],
+		],
+		'question' => [
+			'variables' => [	                		
+				'content' => 'from hook module',
+			],
+		],	
+		'quiz_users' => [
+			'variables' => [	                		
+				'content' => 'from hook module',
+			],
+		],	
+		'quiz_user' => [
+			'variables' => [	                		
+				'content' => 'from hook module',
+			],
+		],	              			              				
+		'user_quiz' => [
+			'variables' => [	                		
+				'content' => 'from hook module',
+			],
+		],
+		'start_quiz' => [
+			'variables' => [	                		
+				'content' => 'from hook module',
+			],
+		],	              					              			
+		'results' => [
+			'variables' => [	                		
+				'content' => 'from hook module',
+			],
+		],	
+		'result' => [
+			'variables' => [	                		
+				'content' => 'from hook module',
+			],
+		],	
+	];
 }
-use Drupal\Core\Mail\MailManagerInterface;
-use Drupal\Component\Utility\SafeMarkup;
-use Drupal\Component\Utility\Html;
+
 /**
- * Implements hook_mail().
- */
+* Implements hook_mail().
+*/
 function quiz_mail($key, &$message, $params) {
-  $options = array(
-    'langcode' => $message['langcode'],
-  );
-  switch ($key) {
-    case 'result':
-      $message['from'] = \Drupal::config('system.site')->get('mail');
-      $message['subject'] = t('@title', array('@title' => $params['title']), $options);
-      $message['body'][] = $params['message'];
-      break;
-  }
+ 	$options = array(
+   'langcode' => $message['langcode'],
+ );
+ switch ($key) {
+   case 'quiz':
+     $message['from'] = \Drupal::config('system.site')->get('mail');
+     $message['subject'] = t('@title', array('@title' => $params['title']), $options);
+     $message['body'][] = $params['message'];
+     break;
+ }
 }
 
 

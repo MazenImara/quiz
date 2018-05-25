@@ -1,10 +1,10 @@
 
 
-Name: {{content.try.user.name}}
+{{'Name'|trans}}: {{content.try.user.name}}
 <br>
-Quiz Title: {{content.try.quizTitle}}
+{{'Quiz Title'|trans}}: {{content.try.quizTitle}}
 <br>
-Quiz Score: {{content.try.score}} %
+Quiz {{'Score'|trans}}: {{content.try.score}} %
 <br>
 Details:
 
@@ -12,19 +12,23 @@ Details:
     <br> Q{{i + 1}}. {{content.results[i].question}}?
     <div class="row">
     	<div class="col-sm-6">
-    		User Answers:<br>
+            {% if content.results[i].score > -1 %}
+    		  {{'User Answers'|trans}}:<br>
+            {% endif %}
     		{% for answer in content.results[i].userAnswers %}
     		    {{answer.body}}<br>
     		{% endfor %}
     	</div>
     	<div class="col-sm-6">
-    		Correct Answers:<br>
+    		{{'Correct Answers'|trans}}:<br>
     		{% for answer in content.results[i].correctAnswers %}
     		    {{answer.body}}<br>
     		{% endfor %}
     	</div>
     </div>
-    Score: {{content.results[i].score}}<br>
+    {% if content.results[i].score > -1 %}
+        {{'Score'|trans}}: {{content.results[i].score}}<br>
+    {% endif %}
 {% endfor %}
 
 

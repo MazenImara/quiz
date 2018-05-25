@@ -2,28 +2,28 @@ quiz.quiz:
   title: 'Quiz Module'
   description: 'to create quiz '
   parent: system.admin
-  url: internal:/quiz
+  route_name: quiz.main
 
 quiz.addQuiz:
   title: 'Manage Quizzes'
   description: 'to create and manage quiz'
   parent: quiz.quiz
-  url: internal:/quiz
+  route_name: quiz.main
 
 quiz.quisUsers:
   title: 'Manage Quiz Users'
   description: 'to manage quiz users'
   parent: quiz.quiz
-  url: internal:/quiz/users
+  route_name: quiz.QuizUsers
 
 quiz.quisResults:
   title: 'Quiz Results'
   description: 'to display and manage results'
   parent: quiz.quiz
-  url: internal:/quiz/results
+  route_name: quiz.results
 
 quiz.userQuiz:
-  title: 'User Quiz'
+  title: 'Start Quiz'
   description: 'quiz to the user'
   parent: quiz.quiz
-  url: internal:/userquiz
+  route_name: quiz.userQuiz

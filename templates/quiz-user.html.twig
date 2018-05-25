@@ -13,27 +13,27 @@
 	{{ content.editForm.subject }}
 	{{ content.editForm.message }}
 	<div class="form-item js-form-type-textfield form-type-textfield form-item-name form-no-label">
-	 	<input data-drupal-selector="edit-name" type="text" id="edit-name" name="name" value="{{content.user.name}}" size="60" maxlength="128" placeholder="Name" class="form-text required" required="required" aria-required="true">
+	 	<input data-drupal-selector="edit-name" type="text" id="edit-name" name="name" value="{{content.user.name}}" size="60" maxlength="128" placeholder="{{'Name'|trans}}" class="form-text required" required="required" aria-required="true">
 	</div>
 	<div class="form-item js-form-type-textfield form-type-textfield form-item-uniq form-no-label">
-		<input data-drupal-selector="edit-uniq" type="text" id="edit-uniq" name="uniq" value="{{content.user.uniq}}" size="60" maxlength="128" placeholder="Email or Uniq Name" class="form-text required" required="required" aria-required="true">
+		<input data-drupal-selector="edit-uniq" type="text" id="edit-uniq" name="uniq" value="{{content.user.uniq}}" size="60" maxlength="128" placeholder="{{'Email or Unique Name'|trans}}" class="form-text required" required="required" aria-required="true">
 	</div>
 	<div class="form-item js-form-type-textfield form-type-textfield form-item-password form-no-label">
-	<input data-drupal-selector="edit-password" type="text" id="edit-password" name="password" value="{{content.user.password}}" size="60" maxlength="128" placeholder="Lösenord" class="form-text required" required="required" aria-required="true">
+	<input data-drupal-selector="edit-password" type="text" id="edit-password" name="password" value="{{content.user.password}}" size="60" maxlength="128" placeholder="{{'Password'|trans}}" class="form-text required" required="required" aria-required="true">
 	</div>
 	<fieldset data-drupal-selector="edit-status" id="edit-status--2--wrapper" class="fieldgroup form-composite required form-item js-form-wrapper form-wrapper" required="required" aria-required="true">
 	      <legend>
-	    <span class="fieldset-legend js-form-required form-required">status</span>
+	    <span class="fieldset-legend js-form-required form-required">{{'Status'|trans}}</span>
 	  </legend>
 	  <div class="fieldset-wrapper">
 	<div id="edit-status--2">
 	<div class="form-item js-form-type-radio form-type-radio form-item-status">
 	<input data-drupal-selector="edit-status-1" type="radio" id="edit-status-1" name="status" value="1" class="form-radio" {{active}} >
-	<label for="edit-status-1" class="option">Active</label>
+	<label for="edit-status-1" class="option">{{'Active'|trans}}</label>
 	</div>
 	<div class="form-item js-form-type-radio form-type-radio form-item-status">
 	<input data-drupal-selector="edit-status-0" type="radio" id="edit-status-0" name="status" value="0" class="form-radio" {{inactive}} >
-	<label for="edit-status-0" class="option">Inactive</label>
+	<label for="edit-status-0" class="option">{{'Inactive'|trans}}</label>
 	</div>
 	</fieldset>
 	<div class="form-item js-form-type-textfield form-type-textfield form-item-id form-no-label">
@@ -50,7 +50,7 @@
 
 <div class="row">
 	<div class="col-sm-6">
-		<h6>Assigned Quizes:</h6>
+		<h6>{{'Assigned Quizes'|trans}}:</h6>
 		{% for quiz in content.userQuizes %}		    
 			<form {{content.unAssignForm.attributes }} method="post" style="display: inline;">
 				{{ content.unAssignForm.form_build_id }}
@@ -66,7 +66,7 @@
 		{% endfor %}
 	</div>
 	<div class="col-sm-6">
-		<h6>Not assigned Quizes:</h6>
+		<h6>{{'Unassigned Quizes'|trans}}:</h6>
 		{% for quiz in content.quizes %}
 			{% if quiz not in content.userQuizes %}
 			    
@@ -90,12 +90,12 @@
 <table class="table table-hover">
     <thead>
       <tr>
-	    <th>Name</th>
-	    <th>Email</th>
-	    <th>Shop</th>
-        <th>Quiz Title</th>
-        <th>Score %</th>
-        <th>Date</th>
+		    <th>{{'Name'|trans}}</th>
+		    <th>{{'Email'|trans}}</th>
+		    <th>{{'Shop'|trans}}</th>
+	      <th>{{'Quiz Title'|trans}}</th>
+	      <th>{{'Score'|trans}} %</th>
+	      <th>{{'Date'|trans}}</th>
       </tr>
     </thead>
     <tbody>

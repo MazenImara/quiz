@@ -4,47 +4,35 @@ namespace Drupal\quiz\Form;
 
 /**
  * @file
- * Contains \Drupal\quiz\Form\addAnswerForm.
+ * Contains \Drupal\quiz\Form\deleteAnswerForm.
  */
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use \Drupal\quiz\Classes\quizMethods;
 
-class addAnswerForm extends FormBase {
+class deleteTextFieldForm extends FormBase {
 	/**
 	 * {@inheritdoc}
 	 */
 	public function getFormId() {
-		return 'addAnswer';
+		return 'deleteTextFieldForm';
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function buildForm(array $form, FormStateInterface $form_state) {
-		$form['body'] = array(
-			'#type'        => 'textarea',
-			'#placeholder' => t('Answer.'),
-			'#required'    => TRUE,
-			'#resizable'   => TRUE,
-		);
-		$form['status']['status'] = array(
-			'#type'  => 'radios',
-			'#title' => $this->t('status'),
-			//'#default_value' => 1,
-			'#options'  => array(0 => $this->t('False'), 1 => $this->t('True')),
-			'#required' => TRUE,
-		);
-		$form['questionId'] = array(
+		$form['id'] = array(
 			'#type'        => 'textfield',
-			'#placeholder' => t('questionId'),
+			'#placeholder' => t('text field id'),
 			'#required'    => TRUE,
 		);
 		$form['actions']['#type']  = 'actions';
 		$form['actions']['submit'] = array(
 			'#type'        => 'submit',
-			'#value'       => $this->t('Create'),
+			'#value'       => $this->t('Delete'),
 			'#button_type' => 'primary',
 		);
 		return $form;
@@ -62,7 +50,7 @@ class addAnswerForm extends FormBase {
 	 */
 	public function submitForm(array&$form, FormStateInterface $form_state) {
 
-		quizMethods::addAnswer($form_state->getValues());
+		quizMethods::deleteTextField($form_state->getValues()['id']);
 	}
 
 }

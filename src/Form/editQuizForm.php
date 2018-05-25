@@ -51,15 +51,17 @@ class editQuizForm extends FormBase {
 		);
 		$form['seccess'] = array(
 			'#type'          => 'textfield',
-			'#placeholder'   => t('Seccess %'),
+			'#placeholder'   => t('Success %'),
 			'#required'      => TRUE,
 			'#default_value' => '86',
 		);
+
 		$form['send_email'] = array(
 			'#type'  => 'checkbox',
 			'#title' => $this->t('Send result by email'),
 			//'#default_value' => 0,
 		);
+		
 		$form['show_result'] = array(
 			'#type'  => 'checkbox',
 			'#title' => $this->t('Show result after quiz'),

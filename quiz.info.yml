@@ -3,3 +3,5 @@ description: custom module for quiz
 type: module
 package: Storleden
 core: 8.x
+interface translation project: quiz
+interface translation server pattern: modules/custom/quiz/translations/%language.po
